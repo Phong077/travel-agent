@@ -44,8 +44,8 @@ POST /api/knowledge/search
 ## 本地运行
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
 访问：
@@ -57,7 +57,7 @@ http://localhost:5173
 ## 构建
 
 ```bash
-npm run build
+pnpm build
 ```
 
 ## 项目亮点

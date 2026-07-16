@@ -95,7 +95,7 @@ const result = computed(() => tripState.result)
 const expandedDay = ref(1)
 
 function toggleDay(day: number) {
-  expandedDay.value = expandedDay.value === day ? day : day
+  expandedDay.value = day
 }
 
 function getDayDistance(day: number) {

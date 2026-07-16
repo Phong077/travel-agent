@@ -14,6 +14,8 @@
 
 ## 技术栈
 
+后端：
+
 - Java 17
 - Spring Boot 3.5.x
 - Spring AI Alibaba
@@ -22,7 +24,26 @@
 - Jackson
 - 本地 Markdown 知识库
 
+前端：
+
+- Vue 3
+- TypeScript
+- Vite
+- Vue Router
+- pnpm
+- Stitch 高保真原型
+
 ## 项目结构
+
+```text
+travel-agent
+├─ frontend                 # Vue 3 前端
+├─ scripts                  # Stitch 原型下载脚本
+├─ stitch-export            # Stitch 导出的原型 HTML 与截图
+└─ src/main/java/com/example/travelagent
+```
+
+后端核心包结构：
 
 ```text
 src/main/java/com/example/travelagent
@@ -48,7 +69,7 @@ src/main/java/com/example/travelagent
    └─ KnowledgeSearchResult.java
 ```
 
-## 运行方式
+## 后端运行方式
 
 先配置阿里百炼 API Key，不要把 Key 写进配置文件。
 
@@ -75,6 +96,40 @@ mvn spring-boot:run
 ```text
 8092
 ```
+
+## 前端运行方式
+
+进入前端目录：
+
+```bash
+cd frontend
+```
+
+安装依赖：
+
+```bash
+pnpm install
+```
+
+启动前端：
+
+```bash
+pnpm dev
+```
+
+访问：
+
+```text
+http://localhost:5173
+```
+
+前端会通过 Vite 代理访问后端：
+
+```text
+/api -> http://localhost:8092
+```
+
+如果后端未启动，前端会自动使用 mock 数据兜底，并在页面顶部提示当前为演示数据。
 
 ## 接口示例
 
@@ -162,6 +217,6 @@ Content-Type: application/json
 ## 后续规划
 
 - 增加天气、路线和景点推荐工具服务。
-- 增加简单前端页面，支持表单输入和行程展示。
 - 增加 Spring AI Alibaba Tool Calling / ReactAgent 版本接口。
 - 将轻量级关键词 RAG 升级为 DashScope Embedding + 向量检索。
+- 增加前端 E2E 测试和部署配置。

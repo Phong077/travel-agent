@@ -75,7 +75,13 @@ import { tripState } from '../store/tripStore'
 
 const result = computed(() => tripState.result)
 const selectedTitle = ref(result.value.references[0]?.title ?? '')
+const fallbackReference = {
+  title: '暂无引用来源',
+  source: 'knowledge',
+  snippet: '当前行程结果没有返回 references。请确认后端 RAG 检索是否正常，或重新生成行程。',
+  score: 0,
+}
 const selected = computed(() => {
-  return result.value.references.find((item) => item.title === selectedTitle.value) ?? result.value.references[0]
+  return result.value.references.find((item) => item.title === selectedTitle.value) ?? result.value.references[0] ?? fallbackReference
 })
 </script>
