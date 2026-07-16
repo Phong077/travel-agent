@@ -6,6 +6,7 @@
 
 - 结构化旅行计划生成：按天返回主题、上午、下午、晚上和交通建议。
 - 轻量级 RAG：读取本地 Markdown 知识库，基于加权关键词召回 TopK 参考资料。
+- 可插拔目的地知识库：按 `common + destination` 目录加载资料，支持四川、云南等目的地扩展。
 - 引用来源返回：接口返回 references，展示本次生成参考了哪些知识片段。
 - 预算分析：根据总预算、人数和天数计算人均预算、每日预算和预算等级。
 - 避免项约束：支持避免太早起床、频繁换酒店等用户限制。
@@ -40,6 +41,10 @@ travel-agent
 ├─ frontend                 # Vue 3 前端
 ├─ scripts                  # Stitch 原型下载脚本
 ├─ stitch-export            # Stitch 导出的原型 HTML 与截图
+├─ src/main/resources/knowledge
+│  ├─ common                # 通用旅行规则
+│  ├─ sichuan               # 四川目的地知识库
+│  └─ yunnan                # 云南目的地知识库
 └─ src/main/java/com/example/travelagent
 ```
 
@@ -205,14 +210,51 @@ Content-Type: application/json
 
 ```text
 用户请求
+  -> DestinationResolver 解析目的地知识库 key
+  -> 加载 common + 当前目的地知识库
   -> 提取目的地、偏好等关键词
-  -> 加权关键词检索本地 Markdown 知识库
+  -> 在当前知识库范围内加权关键词检索
   -> 返回 TopK references
   -> 将 references 注入 Prompt
   -> 调用阿里百炼生成结构化 JSON
   -> Jackson 解析为 TripPlanResponse
   -> 返回旅行计划、预算分析和引用来源
 ```
+
+## 可插拔目的地知识库
+
+知识库按目录组织：
+
+```text
+src/main/resources/knowledge/
+├─ common/
+│  └─ travel-rules.md
+├─ sichuan/
+│  ├─ attractions.md
+│  ├─ food.md
+│  ├─ season.md
+│  └─ transport.md
+└─ yunnan/
+   ├─ attractions.md
+   ├─ food.md
+   ├─ season.md
+   └─ transport.md
+```
+
+系统会根据用户填写的目的地选择知识库：
+
+```text
+四川 / 成都 / 川西 -> common + sichuan
+云南 / 昆明 / 大理 / 丽江 -> common + yunnan
+未知目的地 -> common
+```
+
+扩展新目的地时：
+
+1. 在 `knowledge/` 下新增目录，例如 `beijing/`。
+2. 添加 `attractions.md`、`food.md`、`season.md`、`transport.md` 等资料。
+3. 在 `DestinationResolver` 中增加目的地别名映射。
+4. 补充对应检索测试。
 
 ## 后续规划
 

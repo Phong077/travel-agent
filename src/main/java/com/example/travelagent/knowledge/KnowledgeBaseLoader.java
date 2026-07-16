@@ -12,7 +12,7 @@ import java.util.List;
 @Component
 public class KnowledgeBaseLoader {
 
-    private static final String KNOWLEDGE_PATH = "classpath:knowledge/*.md";
+    private static final String KNOWLEDGE_PATH = "classpath:knowledge/**/*.md";
 
     public List<KnowledgeDocument> loadDocuments() {
         try {
@@ -21,9 +21,10 @@ public class KnowledgeBaseLoader {
 
             List<KnowledgeDocument> documents = new ArrayList<>();
             for (Resource resource : resources) {
-                String source = resource.getFilename();
+                String source = resource.getURI().toString();
+                String destinationKey = extractDestinationKey(source);
                 String content = resource.getContentAsString(StandardCharsets.UTF_8);
-                documents.addAll(splitMarkdown(source, content));
+                documents.addAll(splitMarkdown(destinationKey, toDisplaySource(source), content));
             }
             return documents;
         } catch (IOException e) {
@@ -31,7 +32,32 @@ public class KnowledgeBaseLoader {
         }
     }
 
-    private List<KnowledgeDocument> splitMarkdown(String source, String content) {
+    private String extractDestinationKey(String source) {
+        String normalized = source.replace("\\", "/");
+        int knowledgeIndex = normalized.indexOf("/knowledge/");
+        if (knowledgeIndex < 0) {
+            return "common";
+        }
+
+        String remaining = normalized.substring(knowledgeIndex + "/knowledge/".length());
+        int slashIndex = remaining.indexOf('/');
+        if (slashIndex < 0) {
+            return "common";
+        }
+
+        return remaining.substring(0, slashIndex);
+    }
+
+    private String toDisplaySource(String source) {
+        String normalized = source.replace("\\", "/");
+        int knowledgeIndex = normalized.indexOf("/knowledge/");
+        if (knowledgeIndex < 0) {
+            return normalized;
+        }
+        return normalized.substring(knowledgeIndex + "/knowledge/".length());
+    }
+
+    private List<KnowledgeDocument> splitMarkdown(String destinationKey, String source, String content) {
         List<KnowledgeDocument> documents = new ArrayList<>();
         String[] sections = content.split("(?m)^## ");
 
@@ -49,7 +75,7 @@ public class KnowledgeBaseLoader {
             String title = trimmed.substring(0, lineBreakIndex).trim();
             String body = trimmed.substring(lineBreakIndex + 1).trim();
             if (!title.isEmpty() && !body.isEmpty()) {
-                documents.add(new KnowledgeDocument(title, source, body));
+                documents.add(new KnowledgeDocument(destinationKey, title, source, body));
             }
         }
 

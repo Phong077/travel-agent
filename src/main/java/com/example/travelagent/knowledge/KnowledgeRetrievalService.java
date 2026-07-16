@@ -13,21 +13,29 @@ public class KnowledgeRetrievalService {
     private static final Logger log = LoggerFactory.getLogger(KnowledgeRetrievalService.class);
 
     private static final int TOP_K = 5;
+    private static final String COMMON_KEY = "common";
 
     private record WeightedKeyword(String value, int weight) {
     }
     private final List<KnowledgeDocument> documents;
+    private final DestinationResolver destinationResolver;
 
-    public KnowledgeRetrievalService(KnowledgeBaseLoader knowledgeBaseLoader) {
+    public KnowledgeRetrievalService(
+            KnowledgeBaseLoader knowledgeBaseLoader,
+            DestinationResolver destinationResolver
+    ) {
         this.documents = knowledgeBaseLoader.loadDocuments();
+        this.destinationResolver = destinationResolver;
     }
 
     public List<KnowledgeSearchResult> retrieve(PlanTripRequest request) {
+        String destinationKey = destinationResolver.resolve(request.destination());
         List<WeightedKeyword> keywords = buildKeywords(request);
 
-        log.info("Retrieval keywords: {}", formatKeywords(keywords));
+        log.info("Retrieval destinationKey={}, keywords={}", destinationKey, formatKeywords(keywords));
 
         List<KnowledgeSearchResult> results = documents.stream()
+                .filter(document -> isSearchableForDestination(document, destinationKey))
                 .map(document -> toSearchResult(document, keywords))
                 .filter(result -> result.score() > 0)
                 .sorted(Comparator.comparingInt(KnowledgeSearchResult::score).reversed())
@@ -42,6 +50,10 @@ public class KnowledgeRetrievalService {
         ));
 
         return results;
+    }
+
+    private boolean isSearchableForDestination(KnowledgeDocument document, String destinationKey) {
+        return COMMON_KEY.equals(document.destinationKey()) || document.destinationKey().equals(destinationKey);
     }
     private String formatKeywords(List<WeightedKeyword> keywords) {
         return keywords.stream()
@@ -73,8 +85,6 @@ public class KnowledgeRetrievalService {
         addIfPresent(keywords, request.destination(), 3);
         addAllIfPresent(keywords, request.preferences(), 3);
 
-        keywords.add(new WeightedKeyword("四川", 1));
-        keywords.add(new WeightedKeyword("成都", 1));
         keywords.add(new WeightedKeyword("交通", 1));
         keywords.add(new WeightedKeyword("美食", 1));
 

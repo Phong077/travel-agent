@@ -4,6 +4,7 @@ import com.example.travelagent.domain.BudgetAnalysis;
 import com.example.travelagent.domain.KnowledgeReference;
 import com.example.travelagent.domain.PlanTripRequest;
 import com.example.travelagent.domain.TripPlanResponse;
+import com.example.travelagent.knowledge.DestinationResolver;
 import com.example.travelagent.knowledge.KnowledgeRetrievalService;
 import com.example.travelagent.knowledge.KnowledgeSearchResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -24,26 +25,33 @@ public class TravelPlanningService {
     private final ObjectMapper objectMapper;
     private final KnowledgeRetrievalService knowledgeRetrievalService;
     private final BudgetService budgetService;
+    private final DestinationResolver destinationResolver;
 
     public TravelPlanningService(
             ChatClient.Builder chatClientBuilder,
             ObjectMapper objectMapper,
             KnowledgeRetrievalService knowledgeRetrievalService,
-            BudgetService budgetService
+            BudgetService budgetService,
+            DestinationResolver destinationResolver
     ) {
         this.chatClient = chatClientBuilder.build();
         this.objectMapper = objectMapper;
         this.knowledgeRetrievalService = knowledgeRetrievalService;
         this.budgetService = budgetService;
+        this.destinationResolver = destinationResolver;
     }
 
     public TripPlanResponse plan(PlanTripRequest request) {
         List<KnowledgeSearchResult> references = knowledgeRetrievalService.retrieve(request);
         BudgetAnalysis budgetAnalysis = budgetService.analyze(request);
+        String destinationKey = destinationResolver.resolve(request.destination());
+        boolean hasDedicatedKnowledgeBase = destinationResolver.hasDedicatedKnowledgeBase(destinationKey);
 
         log.info(
-                "Planning trip: destination={}, days={}, travelers={}, budget={}, references={}",
+                "Planning trip: destination={}, destinationKey={}, dedicatedKnowledgeBase={}, days={}, travelers={}, budget={}, references={}",
                 request.destination(),
+                destinationKey,
+                hasDedicatedKnowledgeBase,
                 request.days(),
                 request.travelers(),
                 request.budget(),
@@ -55,7 +63,7 @@ public class TravelPlanningService {
                 budgetAnalysis.perPersonDailyBudget()
         );
 
-        String prompt = buildPrompt(request, references, budgetAnalysis);
+        String prompt = buildPrompt(request, references, budgetAnalysis, hasDedicatedKnowledgeBase);
 
         String json = chatClient.prompt()
                 .user(prompt)
@@ -86,11 +94,13 @@ public class TravelPlanningService {
     private String buildPrompt(
             PlanTripRequest request,
             List<KnowledgeSearchResult> references,
-            BudgetAnalysis budgetAnalysis
+            BudgetAnalysis budgetAnalysis,
+            boolean hasDedicatedKnowledgeBase
     ) {
         return """
-                你是一名专业的四川旅行规划助手。
-                请根据用户需求，生成一份真实、实用、节奏合理的四川旅行计划。
+                你是一名专业的旅行规划助手。
+                请根据用户需求，生成一份真实、实用、节奏合理的旅行计划。
+                本次用户填写的目的地是：%s。
 
                 你必须只返回合法 JSON。
                 不要返回 Markdown。
@@ -103,6 +113,9 @@ public class TravelPlanningService {
                 知识库参考资料：
                 %s
 
+                知识库状态：
+                %s
+
                 用户明确希望避免的内容：
                 %s
 
@@ -113,10 +126,10 @@ public class TravelPlanningService {
                 预算建议：%s
 
                 如果避免项中提到“不早起”或“太早起床”，不要安排早于 8:30 的出发时间。
-                如果避免项中提到“每天换酒店”或“频繁换酒店”，应尽量减少换酒店次数，优先使用成都作为基地。
+                如果避免项中提到“每天换酒店”或“频繁换酒店”，应尽量减少换酒店次数，优先选择交通便利的城市或区域作为基地。
 
                 规划要求：
-                1. 优先考虑真实的四川目的地，例如成都、都江堰、青城山、乐山、峨眉山、九寨沟、黄龙、川西等。
+                1. 必须围绕用户填写的目的地进行规划，不要擅自改成其他省份或城市。
                 2. 每一天都要按照上午、下午、晚上进行安排。
                 3. 行程节奏要合理，不要为了堆景点而安排过度赶路。
                 4. 需要结合用户的预算、人数、偏好和避免项。
@@ -127,7 +140,7 @@ public class TravelPlanningService {
 
                 JSON 格式必须严格如下：
                 {
-                  "destination": "四川",
+                  "destination": "%s",
                   "totalDays": 5,
                   "summary": "这里填写整段行程的中文概述",
                   "days": [
@@ -151,12 +164,17 @@ public class TravelPlanningService {
                 偏好：%s
                 避免项：%s
                 """.formatted(
+                request.destination(),
                 formatReferences(references),
+                hasDedicatedKnowledgeBase
+                        ? "已命中该目的地的专属知识库，请优先使用这些资料。"
+                        : "当前目的地暂无专属知识库，仅命中通用旅行规则。请严格围绕用户填写的目的地，结合常识谨慎生成。",
                 formatList(request.avoid()),
                 budgetAnalysis.perPersonBudget(),
                 budgetAnalysis.perPersonDailyBudget(),
                 budgetAnalysis.level(),
                 budgetAnalysis.suggestion(),
+                request.destination(),
                 request.departureCity(),
                 request.destination(),
                 request.days(),
