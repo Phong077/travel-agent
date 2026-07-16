@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Travel AI - 来源参考</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&amp;family=Manrope:wght@500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config injected from system prompt -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#dce9ff",
+                        "on-secondary-fixed-variant": "#004c6e",
+                        "background": "#f8f9ff",
+                        "primary-fixed": "#e2dfff",
+                        "inverse-surface": "#213145",
+                        "primary": "#3525cd",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary": "#006591",
+                        "inverse-on-surface": "#eaf1ff",
+                        "inverse-primary": "#c3c0ff",
+                        "surface-tint": "#4d44e3",
+                        "secondary-fixed-dim": "#89ceff",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed-variant": "#3323cc",
+                        "primary-container": "#4f46e5",
+                        "on-primary-fixed": "#0f0069",
+                        "on-surface": "#0b1c30",
+                        "surface-variant": "#d3e4fe",
+                        "outline": "#777587",
+                        "surface-container": "#e5eeff",
+                        "on-secondary-fixed": "#001e2f",
+                        "on-tertiary-container": "#ffd0d2",
+                        "on-secondary-container": "#004666",
+                        "primary-fixed-dim": "#c3c0ff",
+                        "surface": "#f8f9ff",
+                        "tertiary-container": "#bf0f3c",
+                        "tertiary": "#95002b",
+                        "on-background": "#0b1c30",
+                        "on-primary-container": "#dad7ff",
+                        "tertiary-fixed": "#ffdadb",
+                        "tertiary-fixed-dim": "#ffb2b7",
+                        "surface-container-highest": "#d3e4fe",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed": "#40000d",
+                        "on-error": "#ffffff",
+                        "secondary-fixed": "#c9e6ff",
+                        "on-secondary": "#ffffff",
+                        "on-surface-variant": "#464555",
+                        "on-tertiary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "surface-dim": "#cbdbf5",
+                        "outline-variant": "#c7c4d8",
+                        "surface-bright": "#f8f9ff",
+                        "on-primary": "#ffffff",
+                        "surface-container-low": "#eff4ff",
+                        "on-tertiary-fixed-variant": "#92002a",
+                        "secondary-container": "#39b8fd"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "32px",
+                        "margin-mobile": "16px",
+                        "md": "24px",
+                        "sm": "16px",
+                        "base": "4px",
+                        "xs": "8px",
+                        "xl": "48px",
+                        "gutter": "24px",
+                        "margin-desktop": "40px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "label-md": ["Manrope"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "label-sm": ["Manrope"],
+                        "display-lg": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .ai-glow {
+            box-shadow: 0 0 15px rgba(53, 37, 205, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background h-full font-body-lg">
+<div class="flex h-full overflow-hidden">
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col h-full overflow-hidden relative">
+<!-- Decorative Mesh Gradient Background -->
+<div class="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+<div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary-fixed-dim/20 blur-[100px]"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-secondary-fixed/30 blur-[80px]"></div>
+</div>
+<!-- Header -->
+<header class="flex-none relative z-10 p-margin-desktop md:px-lg flex items-center justify-between border-b border-surface-variant/30">
+<div class="flex items-center gap-xs">
+<button class="p-xs rounded-full hover:bg-surface-variant/50 transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined text-[24px]">arrow_back</span>
+</button>
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface">知识检索</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">用于生成您巴黎三日游行程的来源</p>
+</div>
+</div>
+</header>
+<!-- Content Area -->
+<div class="flex-1 overflow-y-auto relative z-10 p-margin-desktop md:px-lg md:py-md">
+<div class="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-3 gap-lg">
+<!-- Left Column: Source List (RAG References) -->
+<div class="lg:col-span-1 flex flex-col gap-sm h-[calc(100vh-140px)] overflow-y-auto pr-xs custom-scrollbar">
+<h2 class="font-headline-md text-headline-md mb-xs">找到的来源</h2>
+<!-- Reference Item 1 (Active/High Match) -->
+<div class="glass-card rounded-xl p-md flex flex-col gap-xs cursor-pointer hover:shadow-[0px_10px_30px_rgba(0,0,0,0.04)] transition-all border-l-4 border-l-primary ai-glow">
+<div class="flex justify-between items-start">
+<span class="bg-primary-container text-on-primary-container px-xs py-base rounded-full font-label-sm text-label-sm flex items-center gap-[4px]">
+<span class="material-symbols-outlined text-[14px]">bolt</span>
+                                    98% 匹配
+                                </span>
+<span class="material-symbols-outlined text-outline-variant text-[20px]">description</span>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface mb-base">悦游 Condé Nast Traveler：巴黎72小时</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant line-clamp-2">在法国首都度过完美三天的全面指南，涵盖必去博物馆、餐饮和隐藏的街区。</p>
+</div>
+<div class="flex items-center gap-xs mt-xs text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px]">language</span>
+<span>网络文章</span>
+<span class="w-[3px] h-[3px] rounded-full bg-outline-variant"></span>
+<span>2分钟前提取</span>
+</div>
+</div>
+<!-- Reference Item 2 -->
+<div class="glass-card rounded-xl p-md flex flex-col gap-xs cursor-pointer hover:shadow-[0px_10px_30px_rgba(0,0,0,0.04)] transition-all">
+<div class="flex justify-between items-start">
+<span class="bg-surface-variant text-on-surface-variant px-xs py-base rounded-full font-label-sm text-label-sm flex items-center gap-[4px]">
+<span class="material-symbols-outlined text-[14px]">bolt</span>
+                                    85% 匹配
+                                </span>
+<span class="material-symbols-outlined text-outline-variant text-[20px]">picture_as_pdf</span>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface mb-base">卢浮宫官方地图与指南.pdf</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant line-clamp-2">详细的平面图和推荐路线，帮助您在3小时内看完卢浮宫的精华。</p>
+</div>
+<div class="flex items-center gap-xs mt-xs text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px]">folder</span>
+<span>本地上传</span>
+</div>
+</div>
+<!-- Reference Item 3 -->
+<div class="glass-card rounded-xl p-md flex flex-col gap-xs cursor-pointer hover:shadow-[0px_10px_30px_rgba(0,0,0,0.04)] transition-all">
+<div class="flex justify-between items-start">
+<span class="bg-surface-variant text-on-surface-variant px-xs py-base rounded-full font-label-sm text-label-sm flex items-center gap-[4px]">
+<span class="material-symbols-outlined text-[14px]">bolt</span>
+                                    72% 匹配
+                                </span>
+<span class="material-symbols-outlined text-outline-variant text-[20px]">sticky_note_2</span>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface mb-base">用户偏好笔记</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant line-clamp-2">“我喜欢在远离旅游陷阱的地方寻找安静的咖啡馆。另外，我对贝类轻微过敏。”</p>
+</div>
+<div class="flex items-center gap-xs mt-xs text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px]">person</span>
+<span>用户资料</span>
+</div>
+</div>
+</div>
+<!-- Right Column: Detail View (The Inspiration for this layout) -->
+<div class="lg:col-span-2 hidden lg:flex flex-col">
+<div class="glass-card rounded-[24px] flex-1 p-lg flex flex-col shadow-sm relative overflow-hidden">
+<!-- Header of Detail -->
+<div class="flex justify-between items-start mb-md">
+<div>
+<div class="flex items-center gap-sm mb-xs">
+<span class="bg-primary-container text-on-primary-container p-xs rounded-lg">
+<span class="material-symbols-outlined text-[24px]">description</span>
+</span>
+<h2 class="font-headline-md text-headline-md">悦游 Condé Nast Traveler：巴黎72小时</h2>
+</div>
+<a class="font-label-sm text-label-sm text-primary flex items-center gap-[4px] hover:underline" href="#">
+                                         cntraveler.com/guides/paris <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+</a>
+</div>
+<button class="bg-surface-variant text-on-surface-variant px-sm py-xs rounded-full font-label-md text-label-md hover:bg-surface-variant/80 transition-colors">
+                                     查看原文
+                                 </button>
+</div>
+<!-- Extracted Content -->
+<div class="bg-surface-container-lowest/50 rounded-xl p-md flex-1 overflow-y-auto">
+<h4 class="font-label-md text-label-md text-on-surface mb-xs">提取的见解</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mb-md leading-relaxed">
+                                     "...对于初次到访的游客来说，在第1区和第4区度过第一天至关重要。在当地的面包店早早开始，然后前往卢浮宫以避开中午的人潮。在沉浸于艺术之后，穿过塞纳河前往西岱岛欣赏巴黎圣母院，然后在充满活力的玛黑区享用晚餐，该区以其历史建筑和时尚精品店的结合而闻名..."
+                                 </p>
+<h4 class="font-label-md text-label-md text-on-surface mb-xs">这被如何使用</h4>
+<ul class="space-y-sm">
+<li class="flex items-start gap-xs">
+<span class="material-symbols-outlined text-primary text-[20px] mt-[2px]">check_circle</span>
+<span class="font-body-md text-body-md text-on-surface-variant">将卢浮宫参观安排在第一天清晨。</span>
+</li>
+<li class="flex items-start gap-xs">
+<span class="material-symbols-outlined text-primary text-[20px] mt-[2px]">check_circle</span>
+<span class="font-body-md text-body-md text-on-surface-variant">推荐玛黑区作为第一天的晚餐选择。</span>
+</li>
+</ul>
+</div>
+<!-- Stylistic reference image integration -->
+<div class="absolute bottom-4 right-4 w-32 h-32 opacity-10 pointer-events-none">
+<img alt="UI Reference" class="w-full h-full object-cover rounded-lg filter grayscale" data-alt="A modern, high-end UI dashboard showing a list of meetings on the left side, styled with soft shadows, clean typography, and a bright light-mode aesthetic, emphasizing structured data presentation." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5G_iVNvxYrNbcNFW0ZGcaajNsv-Vqhqd6RV0NBtUzTM_tpFRtH4erg5KaH1uxRMpRrpzC_yIRsyXI0YLW7RDWMAgMLQdGnkP5McXNrNXZ-2PLagwhq1dOdm8KE3ZXIvJZSy1HLrZQLdFOmCicnkVcUuj56g4JlXbT__TXjTkD_KR-kSryfrBWOH1fKwPt3MW5O-FDl8sBvGFVwK8tKcHljwd7JMT2LKL82Fk7AxymkYBWLDGBmfa4z7qrppKxI7NdBQ"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

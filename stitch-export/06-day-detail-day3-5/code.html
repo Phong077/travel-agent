@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>行程 - 第 3-5 天</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&amp;family=Manrope:wght@500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#dce9ff",
+                        "on-secondary-fixed-variant": "#004c6e",
+                        "background": "#f8f9ff",
+                        "primary-fixed": "#e2dfff",
+                        "inverse-surface": "#213145",
+                        "primary": "#3525cd",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary": "#006591",
+                        "inverse-on-surface": "#eaf1ff",
+                        "inverse-primary": "#c3c0ff",
+                        "surface-tint": "#4d44e3",
+                        "secondary-fixed-dim": "#89ceff",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed-variant": "#3323cc",
+                        "primary-container": "#4f46e5",
+                        "on-primary-fixed": "#0f0069",
+                        "on-surface": "#0b1c30",
+                        "surface-variant": "#d3e4fe",
+                        "outline": "#777587",
+                        "surface-container": "#e5eeff",
+                        "on-secondary-fixed": "#001e2f",
+                        "on-tertiary-container": "#ffd0d2",
+                        "on-secondary-container": "#004666",
+                        "primary-fixed-dim": "#c3c0ff",
+                        "surface": "#f8f9ff",
+                        "tertiary-container": "#bf0f3c",
+                        "tertiary": "#95002b",
+                        "on-background": "#0b1c30",
+                        "on-primary-container": "#dad7ff",
+                        "tertiary-fixed": "#ffdadb",
+                        "tertiary-fixed-dim": "#ffb2b7",
+                        "surface-container-highest": "#d3e4fe",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed": "#40000d",
+                        "on-error": "#ffffff",
+                        "secondary-fixed": "#c9e6ff",
+                        "on-secondary": "#ffffff",
+                        "on-surface-variant": "#464555",
+                        "on-tertiary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "surface-dim": "#cbdbf5",
+                        "outline-variant": "#c7c4d8",
+                        "surface-bright": "#f8f9ff",
+                        "on-primary": "#ffffff",
+                        "surface-container-low": "#eff4ff",
+                        "on-tertiary-fixed-variant": "#92002a",
+                        "secondary-container": "#39b8fd"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "32px",
+                        "margin-mobile": "16px",
+                        "md": "24px",
+                        "sm": "16px",
+                        "base": "4px",
+                        "xs": "8px",
+                        "xl": "48px",
+                        "gutter": "24px",
+                        "margin-desktop": "40px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "label-md": ["Manrope"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "label-sm": ["Manrope"],
+                        "display-lg": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .ai-chip {
+            background: rgba(57, 184, 253, 0.15); /* secondary-container with opacity */
+            border: 1px solid rgba(57, 184, 253, 0.3);
+        }
+        .gradient-mesh {
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+            opacity: 0.05;
+        }
+        
+        /* Accordion transition */
+        .accordion-content {
+            transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out, padding 0.3s ease-in-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.expanded {
+            max-height: 2000px; /* arbitrary large value */
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen relative flex">
+<!-- Background Mesh Gradient -->
+<div class="fixed inset-0 pointer-events-none gradient-mesh z-0"></div>
+<!-- Side Navigation (Desktop) -->
+<nav class="hidden md:flex flex-col p-6 space-y-8 h-full w-72 flex-shrink-0 bg-white/70 backdrop-blur-3xl border-r border-white/50 shadow-sm z-20 fixed left-0 top-0 bottom-0">
+<!-- Brand Logo -->
+<div class="flex items-center space-x-3 mb-4">
+<span class="material-symbols-outlined text-primary text-[32px]" style="font-variation-settings: 'FILL' 1;">flight_takeoff</span>
+<div class="flex flex-col">
+<span class="text-headline-md font-headline-md font-bold text-primary">旅行 AI</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">您的私人管家</span>
+</div>
+</div>
+<!-- Navigation Links -->
+<div class="flex-1 space-y-2">
+<a class="flex items-center space-x-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-variant/30 hover:backdrop-blur-xl transition-all duration-300" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-label-md font-label-md">仪表板</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 bg-primary-container text-on-primary-container rounded-xl font-bold hover:backdrop-blur-xl transition-all duration-300 scale-95 shadow-[0px_10px_30px_rgba(0,0,0,0.04)]" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">map</span>
+<span class="text-label-md font-label-md">计划</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-variant/30 hover:backdrop-blur-xl transition-all duration-300" href="#">
+<span class="material-symbols-outlined">auto_stories</span>
+<span class="text-label-md font-label-md">知识</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-variant/30 hover:backdrop-blur-xl transition-all duration-300" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-label-md font-label-md">设置</span>
+</a>
+</div>
+<!-- Footer Actions -->
+<div class="space-y-4 pt-4 border-t border-surface-variant/30">
+<a class="flex items-center space-x-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-variant/30 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="text-label-md font-label-md">帮助中心</span>
+</a>
+<button class="w-full py-3 px-4 rounded-full bg-gradient-to-r from-primary to-secondary text-on-primary text-label-md font-label-md font-bold shadow-[0_8px_16px_rgba(53,37,205,0.2)] hover:shadow-[0_12px_24px_rgba(53,37,205,0.3)] transition-all transform hover:-translate-y-1">
+                新建行程
+            </button>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 w-full md:ml-72 relative z-10 flex flex-col min-h-screen">
+<!-- Top App Bar (Mobile & Desktop) -->
+<header class="flex justify-between items-center w-full px-10 py-6 max-w-[1920px] mx-auto bg-surface/50 backdrop-blur-xl z-30 sticky top-0 transition-opacity duration-300">
+<!-- Mobile Menu Trigger (hidden on desktop) -->
+<button class="md:hidden p-2 text-on-surface-variant">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<!-- Product Name (Desktop context) -->
+<div class="hidden md:flex flex-col">
+<span class="text-headline-md font-headline-md font-black text-on-surface">智能出行助手</span>
+</div>
+<!-- Mobile Title -->
+<div class="md:hidden flex-1 text-center">
+<span class="text-headline-md font-headline-md font-bold text-on-surface">行程</span>
+</div>
+<!-- Navigation Links (Web) -->
+<div class="hidden md:flex space-x-8">
+<a class="text-primary font-bold border-b-2 border-primary pb-1 hover:text-primary transition-colors text-label-md font-label-md" href="#">行程</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors text-label-md font-label-md" href="#">发现</a>
+</div>
+<!-- Trailing Actions -->
+<div class="flex items-center space-x-4">
+<div class="hidden md:flex space-x-2">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-variant/30">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-variant/30">
+<span class="material-symbols-outlined">chat</span>
+</button>
+</div>
+<button class="hidden md:block py-2 px-6 rounded-full bg-primary-container text-on-primary-container text-label-md font-label-md font-bold hover:bg-primary hover:text-on-primary transition-colors">
+                    创建
+                </button>
+<!-- Profile Image -->
+<div class="h-10 w-10 rounded-full overflow-hidden border-2 border-surface-variant">
+<img alt="Kristin Watson Profile" class="w-full h-full object-cover" data-alt="A close-up portrait of a professional woman with a warm smile, softly lit against a minimal studio background, evoking a modern, approachable aesthetic suitable for a high-end application profile picture." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDu9D9VCJggfqrNQ25WCvao0w4K39t7_eS6t0tfKlQeJzxG-PDY9WUzK29uAJafmHurPPfgDkqKQP_jA_s_C99Uc5p0Z_btyX_tgklHMt_oXYu18c_Y8S9-h6ivPaushF9w_qDpY7gdEKFXUmbmg-7BqS0EKS0QQv1YyRUkXvqOz8J65CLmbEp35LplO7YoOznUMq2J1-vvIzH6v0nUOIMnWuy56VIA5cbHRtcrwXxlx7NXZnERCJWI"/>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="flex-1 px-4 md:px-10 py-8 max-w-[1200px] mx-auto w-full space-y-8">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+<div>
+<h1 class="text-display-lg font-display-lg text-on-surface mb-2">沉浸式京都</h1>
+<p class="text-body-lg font-body-lg text-on-surface-variant">第 3-5 天：文化、自然与烹饪艺术</p>
+</div>
+<div class="flex items-center space-x-3 bg-surface-container-low p-2 rounded-full border border-surface-variant/50">
+<button class="px-4 py-2 rounded-full text-label-md font-label-md text-on-surface-variant hover:bg-surface-container transition-colors">第 1-2 天</button>
+<button class="px-4 py-2 rounded-full text-label-md font-label-md bg-white text-primary shadow-sm font-bold">第 3-5 天</button>
+<button class="px-4 py-2 rounded-full text-label-md font-label-md text-on-surface-variant hover:bg-surface-container transition-colors">第 6-7 天</button>
+</div>
+</div>
+<!-- Progress Indicator -->
+<div class="w-full bg-surface-variant rounded-full h-1.5 mb-10">
+<div class="bg-primary h-1.5 rounded-full" style="width: 60%"></div>
+</div>
+<!-- Day 3 Container (Expanded by default) -->
+<div class="glass-card rounded-3xl overflow-hidden shadow-sm hover:shadow-[0px_10px_30px_rgba(0,0,0,0.04)] transition-shadow duration-300 border border-white/50">
+<!-- Accordion Header -->
+<button class="w-full px-8 py-6 flex items-center justify-between bg-white/40 hover:bg-white/60 transition-colors" onclick="toggleAccordion('day3-content', 'day3-icon')">
+<div class="flex items-center space-x-6">
+<div class="w-14 h-14 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-headline-md text-headline-md shadow-sm">
+                            03
+                        </div>
+<div class="text-left">
+<h2 class="text-headline-md font-headline-md text-on-surface">岚山与京都西部</h2>
+<p class="text-body-md font-body-md text-on-surface-variant mt-1">竹林与宁静的寺庙</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant transition-transform duration-300 rotate-180" id="day3-icon">expand_more</span>
+</button>
+<!-- Accordion Content -->
+<div class="accordion-content expanded bg-white/20" id="day3-content">
+<div class="p-8 space-y-10 border-t border-white/40">
+<!-- AI Tip -->
+<div class="ai-chip rounded-2xl p-4 flex items-start space-x-4">
+<span class="material-symbols-outlined text-secondary mt-1" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<div>
+<h4 class="text-label-md font-label-md text-on-secondary-container">AI 洞察</h4>
+<p class="text-body-md font-body-md text-on-secondary-container/80 mt-1">早上 8:00 前到达竹林，以避开人群并捕捉最佳摄影光线。</p>
+</div>
+</div>
+<!-- Timeline Item 1 -->
+<div class="relative pl-8 before:content-[''] before:absolute before:left-0 before:top-2 before:bottom-[-40px] before:w-px before:bg-surface-variant last:before:hidden">
+<div class="absolute left-[-5px] top-2 w-3 h-3 rounded-full bg-primary ring-4 ring-primary-fixed"></div>
+<div class="flex flex-col lg:flex-row gap-6">
+<div class="lg:w-1/3">
+<span class="text-label-md font-label-md text-primary bg-primary-fixed/50 px-3 py-1 rounded-full inline-block mb-3">上午 08:00</span>
+<h3 class="text-headline-md font-headline-md text-on-surface mb-2">岚山竹林</h3>
+<div class="flex items-center text-on-surface-variant text-label-sm font-label-sm space-x-2 mb-4">
+<span class="material-symbols-outlined text-[16px]">schedule</span>
+<span>2 小时</span>
+<span>•</span>
+<span class="material-symbols-outlined text-[16px]">directions_walk</span>
+<span>轻松步行</span>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant">漫步在标志性的高耸竹林中。风吹过竹林的沙沙声被评为“日本 100 种声音景观”之一。</p>
+</div>
+<div class="lg:w-2/3 grid grid-cols-2 gap-4">
+<div class="rounded-2xl overflow-hidden h-48 bg-surface-container shadow-sm group">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="A serene morning view of the Arashiyama Bamboo Grove in Kyoto. Tall, vibrant green bamboo stalks reach towards the sky, creating a natural canopy. Soft, golden morning light filters through the leaves, casting long, delicate shadows on the empty stone path below. The mood is tranquil and pristine, capturing the essence of a high-end travel experience." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEtKvsRprcC02UoOe-Zd7OMQL0nfh9XJHB4wunUDpDxo9Bf4PYqJOXa5EbCaAfCWBZVwo-gkPw0JlMZwfPPr2_-AmwgnpVTAQhqe8zurnr5VvdwIY98g37jqGhyaVBxClG6ELytEHi_YnsTIUBh6GGJbLHdGj_lGZu1MDeMPmrOyz60T-TUe_wEb2HiGyu-CvS_tdJpedUhmx42qbVKMVSuqcIj2dzEwiWaCymQSJ8_1ZkdvJ2fqsC"/>
+</div>
+<div class="rounded-2xl overflow-hidden h-48 bg-surface-container shadow-sm group">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="A close-up detail shot of thick green bamboo stalks in a Kyoto grove. The texture of the bamboo is sharp and tactile, with soft, out-of-focus foliage in the background creating a beautiful bokeh effect. The lighting is natural and bright, conveying a fresh, modern aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD57QeXvU_mlqkJhaB6xi0UU_7nzsFTahfSPvhiUaFcT7mBcqiNFjXvoHSNRyBXPB5OeoxzMSr-Kh4kHQf7bcYOWmsm762NEOQyWh374tnzwf-nAE09GEM-G7Acra_H2syjRb8zrR-NYvtZqtNE29exPKiSCFFWLpRjloBRADfNnT1StOQqyRlDVvNX-ipzI1LKeM3Brm4az4rPLuUrNK-_snUtkHy1flURfPIXywmBMo_LLeL6zcBf"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Timeline Item 2 -->
+<div class="relative pl-8 before:content-[''] before:absolute before:left-0 before:top-2 before:bottom-[-40px] before:w-px before:bg-surface-variant last:before:hidden">
+<div class="absolute left-[-5px] top-2 w-3 h-3 rounded-full bg-surface-variant ring-4 ring-white"></div>
+<div class="flex flex-col lg:flex-row gap-6 mt-6">
+<div class="lg:w-1/3">
+<span class="text-label-md font-label-md text-on-surface-variant bg-surface-variant/50 px-3 py-1 rounded-full inline-block mb-3">上午 11:00</span>
+<h3 class="text-headline-md font-headline-md text-on-surface mb-2">天龙寺</h3>
+<div class="flex items-center text-on-surface-variant text-label-sm font-label-sm space-x-2 mb-4">
+<span class="material-symbols-outlined text-[16px]">schedule</span>
+<span>1.5 小时</span>
+<span>•</span>
+<span class="material-symbols-outlined text-[16px]">comment</span>
+<span>联合国教科文组织遗址</span>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant">探索这个世界遗产，重点是令人惊叹的曹源池庭园，它自 14 世纪以来一直保留着原始形态。</p>
+<!-- Transport Tip -->
+<div class="mt-4 bg-surface-container-low rounded-xl p-3 flex items-start space-x-3 border border-surface-variant/30">
+<span class="material-symbols-outlined text-outline mt-0.5">train</span>
+<div>
+<p class="text-label-sm font-label-sm text-on-surface">前往下一站</p>
+<p class="text-body-md font-body-md text-on-surface-variant text-sm mt-1">从岚山站乘坐岚电电车到龙安寺站（20 分钟，220 日元）。</p>
+</div>
+</div>
+</div>
+<div class="lg:w-2/3 rounded-2xl overflow-hidden h-64 bg-surface-container shadow-sm group">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="A wide architectural shot of the Tenryu-ji Temple garden in Kyoto. A meticulously raked gravel zen garden sits in the foreground, leading up to a traditional wooden temple pavilion with elegant curving roofs. Lush green mountains form the backdrop under a clear blue sky. The composition is balanced and peaceful, reflecting a premium, uncluttered travel visual." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtSZdHW0hjkLN2XCVmD-8boF-lTytwbIug84RTJ37_L8kHmAV_ufFqP4ZGPJduh6iWIj7XYkRIyrt9hEsXMgIymgjToujFuexvuFafHEK-2qGk0vO2qewg0wY7a87xhkw5Wy_hcb7_b4QVJStUf-9-QIsufVCbcuT3XnmkGvW5PcjgLlaPucG9U0q59aoh72x2vGIiIYrQYQN1it4idc5qQUlk6TrAs66m33PCU9hdZYlq1VptXQwQ"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Day 4 Container (Collapsed) -->
+<div class="glass-card rounded-3xl overflow-hidden shadow-sm hover:shadow-[0px_10px_30px_rgba(0,0,0,0.04)] transition-shadow duration-300 border border-white/50">
+<button class="w-full px-8 py-6 flex items-center justify-between bg-white/40 hover:bg-white/60 transition-colors" onclick="toggleAccordion('day4-content', 'day4-icon')">
+<div class="flex items-center space-x-6">
+<div class="w-14 h-14 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant font-headline-md text-headline-md shadow-sm">
+                            04
+                        </div>
+<div class="text-left">
+<h2 class="text-headline-md font-headline-md text-on-surface">东山北部</h2>
+<p class="text-body-md font-body-md text-on-surface-variant mt-1">哲学之道与银阁寺</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant transition-transform duration-300" id="day4-icon">expand_more</span>
+</button>
+<div class="accordion-content bg-white/20" id="day4-content">
+<div class="p-8 space-y-8 border-t border-white/40">
+<div class="text-center py-10">
+<span class="material-symbols-outlined text-[48px] text-outline-variant mb-4">pending</span>
+<p class="text-body-lg font-body-lg text-on-surface-variant">第 4 天的详细行程已隐藏。点击上方展开。</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Day 5 Container (Collapsed) -->
+<div class="glass-card rounded-3xl overflow-hidden shadow-sm hover:shadow-[0px_10px_30px_rgba(0,0,0,0.04)] transition-shadow duration-300 border border-white/50">
+<button class="w-full px-8 py-6 flex items-center justify-between bg-white/40 hover:bg-white/60 transition-colors" onclick="toggleAccordion('day5-content', 'day5-icon')">
+<div class="flex items-center space-x-6">
+<div class="w-14 h-14 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant font-headline-md text-headline-md shadow-sm">
+                            05
+                        </div>
+<div class="text-left">
+<h2 class="text-headline-md font-headline-md text-on-surface">宇治与抹茶文化</h2>
+<p class="text-body-md font-body-md text-on-surface-variant mt-1">茶道与古建筑</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant transition-transform duration-300" id="day5-icon">expand_more</span>
+</button>
+<div class="accordion-content bg-white/20" id="day5-content">
+<div class="p-8 space-y-8 border-t border-white/40">
+<div class="text-center py-10">
+<span class="material-symbols-outlined text-[48px] text-outline-variant mb-4">pending</span>
+<p class="text-body-lg font-body-lg text-on-surface-variant">第 5 天的详细行程已隐藏。点击上方展开。</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        function toggleAccordion(contentId, iconId) {
+            const content = document.getElementById(contentId);
+            const icon = document.getElementById(iconId);
+            
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                icon.classList.remove('rotate-180');
+            } else {
+                content.classList.add('expanded');
+                icon.classList.add('rotate-180');
+            }
+        }
+    </script>
+</body></html>

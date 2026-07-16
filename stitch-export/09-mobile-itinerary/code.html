@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>旅游AI - 行程详情 (移动端)</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&amp;family=Manrope:wght@500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-high": "#dce9ff",
+                      "on-secondary-fixed-variant": "#004c6e",
+                      "background": "#f8f9ff",
+                      "primary-fixed": "#e2dfff",
+                      "inverse-surface": "#213145",
+                      "primary": "#3525cd",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary": "#006591",
+                      "inverse-on-surface": "#eaf1ff",
+                      "inverse-primary": "#c3c0ff",
+                      "surface-tint": "#4d44e3",
+                      "secondary-fixed-dim": "#89ceff",
+                      "on-error-container": "#93000a",
+                      "on-primary-fixed-variant": "#3323cc",
+                      "primary-container": "#4f46e5",
+                      "on-primary-fixed": "#0f0069",
+                      "on-surface": "#0b1c30",
+                      "surface-variant": "#d3e4fe",
+                      "outline": "#777587",
+                      "surface-container": "#e5eeff",
+                      "on-secondary-fixed": "#001e2f",
+                      "on-tertiary-container": "#ffd0d2",
+                      "on-secondary-container": "#004666",
+                      "primary-fixed-dim": "#c3c0ff",
+                      "surface": "#f8f9ff",
+                      "tertiary-container": "#bf0f3c",
+                      "tertiary": "#95002b",
+                      "on-background": "#0b1c30",
+                      "on-primary-container": "#dad7ff",
+                      "tertiary-fixed": "#ffdadb",
+                      "tertiary-fixed-dim": "#ffb2b7",
+                      "surface-container-highest": "#d3e4fe",
+                      "error-container": "#ffdad6",
+                      "on-tertiary-fixed": "#40000d",
+                      "on-error": "#ffffff",
+                      "secondary-fixed": "#c9e6ff",
+                      "on-secondary": "#ffffff",
+                      "on-surface-variant": "#464555",
+                      "on-tertiary": "#ffffff",
+                      "error": "#ba1a1a",
+                      "surface-dim": "#cbdbf5",
+                      "outline-variant": "#c7c4d8",
+                      "surface-bright": "#f8f9ff",
+                      "on-primary": "#ffffff",
+                      "surface-container-low": "#eff4ff",
+                      "on-tertiary-fixed-variant": "#92002a",
+                      "secondary-container": "#39b8fd"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "lg": "32px",
+                      "margin-mobile": "16px",
+                      "md": "24px",
+                      "sm": "16px",
+                      "base": "4px",
+                      "xs": "8px",
+                      "xl": "48px",
+                      "gutter": "24px",
+                      "margin-desktop": "40px"
+              },
+              "fontFamily": {
+                      "body-lg": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "headline-lg": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "label-md": [
+                              "Manrope"
+                      ],
+                      "headline-lg-mobile": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "headline-md": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "body-md": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "label-sm": [
+                              "Manrope"
+                      ],
+                      "display-lg": [
+                              "Plus Jakarta Sans"
+                      ]
+              },
+              "fontSize": {
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        /* Glassmorphism Utilities */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .ai-glow {
+            box-shadow: 0 0 20px rgba(53, 37, 205, 0.15);
+        }
+
+        /* Hide scrollbar for clean horizontal scrolling */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* Smooth Accordion Transition */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, padding 0.3s ease, opacity 0.3s ease;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+        }
+        .accordion-content.expanded {
+            max-height: 1000px; /* arbitrary large value */
+            opacity: 1;
+        }
+        
+        .icon-rotate {
+            transition: transform 0.3s ease;
+        }
+        .expanded-icon {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col antialiased">
+<!-- Header (Task-focused: Back button implies departure, so Nav Shell is suppressed based on mandate) -->
+<header class="sticky top-0 z-50 glass-card px-margin-mobile py-sm flex items-center justify-between shadow-sm">
+<button aria-label="返回" class="w-12 h-12 flex items-center justify-center rounded-full hover:bg-surface-variant/50 transition-colors">
+<span class="material-symbols-outlined text-on-surface text-[24px]">arrow_back</span>
+</button>
+<div class="text-center flex-1">
+<h1 class="font-headline-md text-headline-md text-on-surface">京都之旅</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant">10月12日 - 10月16日 • 5天</p>
+</div>
+<button aria-label="编辑行程" class="w-12 h-12 flex items-center justify-center rounded-full hover:bg-surface-variant/50 transition-colors">
+<span class="material-symbols-outlined text-primary text-[24px]">edit</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 overflow-y-auto px-margin-mobile py-md pb-xl">
+<!-- Hero Section / Map Preview -->
+<div class="relative w-full h-48 rounded-xl overflow-hidden mb-md glass-card shadow-sm">
+<div class="bg-cover bg-center w-full h-full absolute inset-0" data-alt="A beautifully rendered, high-end 3D isometric map of Kyoto, Japan, featuring delicate cherry blossoms, traditional wooden temples, and modern minimalist UI markers. The scene is brightly lit with a soft, natural daylight, reflecting a serene and optimistic modern glassmorphic aesthetic. The color palette emphasizes soft blues, pristine whites, and vibrant nature greens." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCCBvzxFvMUHLbRP0IZBOT9gFb5Di3Yjs_pm6EJqYPjoJKjdBjLn4OKqghNhfd6VJGCejvvywLIh_Ct8BGLeWvP_yjZRzk_i8Xfn1ju_37mITUuaz2uBmStMK4YQXopdHHu1zA9-zK6wlLijVkbrRuk2inyB1FlxCYyORa0d7adiaIdkC97pUAkS39v5MpOKDGVTnsJk-Q4cdOc9LYTxb39hH6GW-i-oMD8CZXRdafsLmtMHmt6mB8j')"></div>
+<div class="absolute bottom-0 left-0 right-0 p-sm bg-gradient-to-t from-inverse-surface/80 to-transparent">
+<button class="glass-card text-on-surface px-sm py-xs rounded-full font-label-md text-label-md flex items-center gap-2 backdrop-blur-md bg-white/90">
+<span class="material-symbols-outlined text-[18px]">map</span>
+                     查看实时地图
+                 </button>
+</div>
+</div>
+<!-- AI Summary Chip -->
+<div class="bg-surface-container-high/50 rounded-lg p-sm mb-md flex items-start gap-3 border border-primary/10 ai-glow">
+<span class="material-symbols-outlined text-primary mt-1" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">
+                您的行程安排很均衡。明天包含轻松步行；建议穿舒适的鞋子前往伏见稻荷大社。
+            </p>
+</div>
+<!-- Itinerary Accordion List -->
+<div class="space-y-sm">
+<!-- Day 1 (Expanded Default) -->
+<div class="glass-card rounded-xl overflow-hidden shadow-sm">
+<button aria-expanded="true" class="w-full px-sm py-md flex items-center justify-between bg-white/50 hover:bg-white/70 transition-colors accordion-toggle">
+<div class="flex items-center gap-3">
+<div class="bg-primary text-on-primary w-10 h-10 rounded-full flex items-center justify-center font-headline-md text-headline-md">
+                            1
+                        </div>
+<div class="text-left">
+<h2 class="font-headline-md text-headline-md text-on-surface text-lg">抵达与祇园</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant">10月12日，周一 • 3项活动</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant icon-rotate expanded-icon">expand_more</span>
+</button>
+<div class="accordion-content expanded px-sm pb-md">
+<div class="relative pl-6 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-surface-variant space-y-md mt-sm">
+<!-- Event 1 -->
+<div class="relative">
+<div class="absolute -left-[30px] top-1 w-3 h-3 bg-primary rounded-full border-2 border-white shadow-sm"></div>
+<div class="bg-surface-container-lowest rounded-lg p-sm shadow-sm border border-surface-variant/50">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-label-md text-label-md text-on-surface">入住甘乐酒店</h3>
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-variant/30 px-2 py-1 rounded-md">下午 2:00</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm mb-3">入住并在飞行后休息。</p>
+<div class="flex gap-2">
+<button class="flex-1 bg-surface-container py-2 rounded-lg font-label-md text-label-md text-primary flex items-center justify-center gap-2 hover:bg-surface-container-high transition-colors min-h-[44px]"> <!-- PRD 11 Touch target -->
+<span class="material-symbols-outlined text-[18px]">directions</span>
+                                        导航
+                                    </button>
+</div>
+</div>
+</div>
+<!-- Event 2 -->
+<div class="relative">
+<div class="absolute -left-[30px] top-1 w-3 h-3 bg-secondary rounded-full border-2 border-white shadow-sm"></div>
+<div class="bg-surface-container-lowest rounded-lg p-sm shadow-sm border border-surface-variant/50">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-label-md text-label-md text-on-surface">探索祇园</h3>
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-variant/30 px-2 py-1 rounded-md">下午 4:30</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm mb-3">晚上漫步在历史悠久的艺伎区。非常适合拍照。</p>
+<div class="flex gap-2">
+<button class="flex-1 bg-primary text-on-primary py-2 rounded-lg font-label-md text-label-md flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors min-h-[44px] shadow-sm">
+<span class="material-symbols-outlined text-[18px]">restaurant</span>
+                                        寻找晚餐
+                                    </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Day 2 (Collapsed) -->
+<div class="glass-card rounded-xl overflow-hidden shadow-sm">
+<button aria-expanded="false" class="w-full px-sm py-md flex items-center justify-between bg-white/30 hover:bg-white/50 transition-colors accordion-toggle">
+<div class="flex items-center gap-3">
+<div class="bg-surface-variant text-on-surface w-10 h-10 rounded-full flex items-center justify-center font-headline-md text-headline-md">
+                            2
+                        </div>
+<div class="text-left">
+<h2 class="font-headline-md text-headline-md text-on-surface text-lg">寺庙与自然</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant">10月13日，周二 • 4项活动</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant icon-rotate">expand_more</span>
+</button>
+<div class="accordion-content px-sm">
+<div class="py-md text-center">
+<p class="font-body-md text-on-surface-variant text-sm">伏见稻荷、清水寺等。</p>
+</div>
+</div>
+</div>
+<!-- Day 3 (Collapsed) -->
+<div class="glass-card rounded-xl overflow-hidden shadow-sm">
+<button aria-expanded="false" class="w-full px-sm py-md flex items-center justify-between bg-white/30 hover:bg-white/50 transition-colors accordion-toggle">
+<div class="flex items-center gap-3">
+<div class="bg-surface-variant text-on-surface w-10 h-10 rounded-full flex items-center justify-center font-headline-md text-headline-md">
+                            3
+                        </div>
+<div class="text-left">
+<h2 class="font-headline-md text-headline-md text-on-surface text-lg">岚山竹林</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant">10月14日，周三 • 2项活动</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant icon-rotate">expand_more</span>
+</button>
+<div class="accordion-content px-sm">
+<div class="py-md text-center">
+<p class="font-body-md text-on-surface-variant text-sm">清晨竹林漫步。</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggles = document.querySelectorAll('.accordion-toggle');
+            
+            toggles.forEach(toggle => {
+                toggle.addEventListener('click', () => {
+                    const content = toggle.nextElementSibling;
+                    const icon = toggle.querySelector('.icon-rotate');
+                    const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+                    
+                    // Optional: Close others (Accordion behavior)
+                    // toggles.forEach(t => {
+                    //     if (t !== toggle) {
+                    //         t.setAttribute('aria-expanded', 'false');
+                    //         t.nextElementSibling.classList.remove('expanded');
+                    //         t.querySelector('.icon-rotate').classList.remove('expanded-icon');
+                    //         t.parentElement.classList.replace('bg-white/50', 'bg-white/30');
+                    //     }
+                    // });
+
+                    if (!isExpanded) {
+                        toggle.setAttribute('aria-expanded', 'true');
+                        content.classList.add('expanded');
+                        icon.classList.add('expanded-icon');
+                        toggle.parentElement.classList.replace('bg-white/30', 'bg-white/50');
+                    } else {
+                        toggle.setAttribute('aria-expanded', 'false');
+                        content.classList.remove('expanded');
+                        icon.classList.remove('expanded-icon');
+                        toggle.parentElement.classList.replace('bg-white/50', 'bg-white/30');
+                    }
+                });
+            });
+        });
+    </script>
+</body></html>

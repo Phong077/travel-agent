@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Travel AI - 计划概览</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&amp;family=Manrope:wght@500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#dce9ff",
+                        "on-secondary-fixed-variant": "#004c6e",
+                        "background": "#f8f9ff",
+                        "primary-fixed": "#e2dfff",
+                        "inverse-surface": "#213145",
+                        "primary": "#3525cd",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary": "#006591",
+                        "inverse-on-surface": "#eaf1ff",
+                        "inverse-primary": "#c3c0ff",
+                        "surface-tint": "#4d44e3",
+                        "secondary-fixed-dim": "#89ceff",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed-variant": "#3323cc",
+                        "primary-container": "#4f46e5",
+                        "on-primary-fixed": "#0f0069",
+                        "on-surface": "#0b1c30",
+                        "surface-variant": "#d3e4fe",
+                        "outline": "#777587",
+                        "surface-container": "#e5eeff",
+                        "on-secondary-fixed": "#001e2f",
+                        "on-tertiary-container": "#ffd0d2",
+                        "on-secondary-container": "#004666",
+                        "primary-fixed-dim": "#c3c0ff",
+                        "surface": "#f8f9ff",
+                        "tertiary-container": "#bf0f3c",
+                        "tertiary": "#95002b",
+                        "on-background": "#0b1c30",
+                        "on-primary-container": "#dad7ff",
+                        "tertiary-fixed": "#ffdadb",
+                        "tertiary-fixed-dim": "#ffb2b7",
+                        "surface-container-highest": "#d3e4fe",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed": "#40000d",
+                        "on-error": "#ffffff",
+                        "secondary-fixed": "#c9e6ff",
+                        "on-secondary": "#ffffff",
+                        "on-surface-variant": "#464555",
+                        "on-tertiary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "surface-dim": "#cbdbf5",
+                        "outline-variant": "#c7c4d8",
+                        "surface-bright": "#f8f9ff",
+                        "on-primary": "#ffffff",
+                        "surface-container-low": "#eff4ff",
+                        "on-tertiary-fixed-variant": "#92002a",
+                        "secondary-container": "#39b8fd"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "32px",
+                        "margin-mobile": "16px",
+                        "md": "24px",
+                        "sm": "16px",
+                        "base": "4px",
+                        "xs": "8px",
+                        "xl": "48px",
+                        "gutter": "24px",
+                        "margin-desktop": "40px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "label-md": ["Manrope"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "label-sm": ["Manrope"],
+                        "display-lg": ["Plus Jakarta Sans"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .ai-gradient-text {
+            background: linear-gradient(135deg, #3525cd, #006591);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hover-lift {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            box-shadow: 0px 10px 30px rgba(0,0,0, 0.04);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col md:flex-row overflow-x-hidden">
+<!-- SideNavBar (Desktop) -->
+<nav class="hidden md:flex flex-col p-6 space-y-8 bg-white/70 backdrop-blur-3xl h-full w-72 flex-shrink-0 border-r border-white/50 shadow-sm fixed top-0 left-0 z-40">
+<div class="text-headline-md font-headline-md font-bold text-primary">
+            Travel AI
+            <div class="text-label-sm font-label-sm text-on-surface-variant font-normal mt-1">您的私人管家</div>
+</div>
+<button class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-primary to-secondary text-white font-label-md text-label-md shadow-lg shadow-primary/30 hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">add</span>
+            新建行程
+        </button>
+<div class="flex-1 space-y-2 flex flex-col">
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-variant/30 text-label-md font-label-md hover:backdrop-blur-xl transition-all duration-300" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                仪表盘
+            </a>
+<a class="flex items-center gap-4 px-4 py-3 bg-primary-container text-on-primary-container rounded-xl font-bold text-label-md font-label-md hover:backdrop-blur-xl transition-all duration-300 scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">map</span>
+                计划
+            </a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-variant/30 text-label-md font-label-md hover:backdrop-blur-xl transition-all duration-300" href="#">
+<span class="material-symbols-outlined">auto_stories</span>
+                知识库
+            </a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-variant/30 text-label-md font-label-md hover:backdrop-blur-xl transition-all duration-300" href="#">
+<span class="material-symbols-outlined">settings</span>
+                设置
+            </a>
+</div>
+<div class="pt-6 border-t border-white/50">
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-variant/30 text-label-md font-label-md hover:backdrop-blur-xl transition-all duration-300" href="#">
+<span class="material-symbols-outlined">help</span>
+                帮助中心
+            </a>
+<div class="mt-4 px-4 flex items-center gap-3">
+<img alt="User profile picture" class="w-10 h-10 rounded-full object-cover" data-alt="A professional headshot of a user, smiling slightly, soft lighting, modern bright background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2CtHFVYa6MBg9dRsSKRn0tSwztQDvHDW-yxkZr9Xjqa-46gQoyQd6x50JVxqJIRFamLV3vaI7zREpIocYrODlhPVbIF46QNZvvysaJvbgu_paanJZisGmakk6_rAR21erPWZ5FpX5ZvaVGfVV_PPHT4vhDWecLfFUjdZl69KK2IXTUnjyK6QsI5NRToJmu_Lu9JtW-pYXtNtN3V3A9o99tx0xkz_Xz4C6pg-cauh_yfBldXMyYZlx"/>
+<div class="text-label-sm font-label-sm text-on-surface">Kristin Watson</div>
+</div>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 md:ml-72 w-full max-w-[1920px] mx-auto min-h-screen relative">
+<!-- TopNavBar (Mobile only for Nav, header elements for both) -->
+<header class="bg-transparent flex justify-between items-center w-full px-margin-mobile md:px-10 py-6 absolute top-0 left-0 z-30">
+<div class="md:hidden text-headline-lg-mobile font-headline-lg-mobile font-black text-on-surface">
+                Travel AI
+            </div>
+<div class="hidden md:flex gap-6">
+<!-- Spacing for fixed sidenav -->
+</div>
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 rounded-full glass-card flex items-center justify-center text-on-surface hover:text-primary transition-colors shadow-sm">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="w-10 h-10 rounded-full glass-card flex items-center justify-center text-on-surface hover:text-primary transition-colors shadow-sm">
+<span class="material-symbols-outlined">chat</span>
+</button>
+</div>
+</header>
+<!-- Destination Cover -->
+<div class="relative w-full h-[512px] md:h-[614px] overflow-hidden rounded-b-3xl md:rounded-bl-[48px] shadow-sm">
+<div class="absolute inset-0 bg-cover bg-center w-full h-full transform scale-105 transition-transform duration-1000 ease-out animate-[kenburns_20s_ease-in-out_infinite_alternate]" data-alt="A breathtaking aerial view of Kyoto in autumn, vibrant red and orange maple leaves surrounding a traditional wooden temple. Soft, warm morning sunlight streaming through the trees, highly detailed, photorealistic, cinematic lighting, modern travel photography style." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC4HqNOMdERVNz08yghMJMqkzmrYk49fajBPAmuwtJz3GcfPlvpUSMMBBwvFjtMG_WfPB8jw86MSnzuve6P5myWKMdv_qTe_JGF_7rdZSzep7uE6RSvv4w95K8WLOEXb3swr6NEQhfBwPjJ6RpTZh7ty0AZWWtbHr7oUYCwhN-Jn6kipB0jEYKA2jopgt0IZXR7Z-vrd02F9YZi7JgGm4O1KNUYYFCAHOlZ_gXe2aCIHVGRTSPkoomL')"></div>
+<!-- Gradient Overlay for Readability -->
+<div class="absolute inset-0 bg-gradient-to-t from-inverse-surface/80 via-inverse-surface/30 to-transparent"></div>
+<div class="absolute bottom-0 left-0 w-full p-margin-mobile md:p-10 text-white z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<div class="flex items-center gap-2 mb-2">
+<span class="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-label-sm font-label-sm border border-white/30 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">auto_awesome</span>
+                            AI 生成计划
+                        </span>
+<span class="px-3 py-1 rounded-full bg-primary/80 backdrop-blur-md text-label-sm font-label-sm border border-primary/30">
+                            7天
+                        </span>
+</div>
+<h1 class="text-display-lg font-display-lg mb-2">京都与大阪</h1>
+<p class="text-body-lg font-body-lg text-white/80 max-w-2xl">精心策划的旅程，带您穿梭于古老寺庙、现代美食圣地与绚丽秋叶之间。</p>
+</div>
+<div class="flex gap-4">
+<button class="px-6 py-3 rounded-full bg-white text-primary font-label-md text-label-md shadow-lg hover:bg-surface-container-low transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+                        预览路线
+                    </button>
+</div>
+</div>
+</div>
+<!-- Content Canvas -->
+<div class="px-margin-mobile md:px-10 py-8 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Column: Summary (Span 8) -->
+<div class="lg:col-span-8 space-y-gutter">
+<!-- AI Summary Card -->
+<section class="glass-card rounded-2xl p-6 md:p-lg hover-lift">
+<div class="flex items-center justify-between mb-6">
+<h2 class="text-headline-md font-headline-md flex items-center gap-2 text-on-surface">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+                            行程总结
+                        </h2>
+<button class="text-primary hover:text-primary-container text-label-md font-label-md transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+                            优化
+                        </button>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant leading-relaxed mb-6">
+                        基于您对文化沉浸与美食探索的偏好，这份为期7天的行程在京都的标志性历史遗迹与大阪充满活力的街头美食文化之间取得了平衡。节奏适中，让您有充足的时间深度游览而不会感到仓促。我们优先安排清晨参观热门神社，以避开人群。
+                    </p>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/30">
+<div class="text-on-surface-variant text-label-sm font-label-sm mb-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">pace</span> 节奏
+                            </div>
+<div class="text-body-md font-body-md font-semibold text-on-surface">适中</div>
+</div>
+<div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/30">
+<div class="text-on-surface-variant text-label-sm font-label-sm mb-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">wb_sunny</span> 最佳时间
+                            </div>
+<div class="text-body-md font-body-md font-semibold text-on-surface">10月 - 11月</div>
+</div>
+<div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/30">
+<div class="text-on-surface-variant text-label-sm font-label-sm mb-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">favorite</span> 氛围
+                            </div>
+<div class="text-body-md font-body-md font-semibold text-on-surface">文化与美食</div>
+</div>
+</div>
+</section>
+<!-- Daily Highlights Preview -->
+<section class="glass-card rounded-2xl p-6 md:p-lg hover-lift">
+<h3 class="text-headline-md font-headline-md mb-6 text-on-surface">亮点</h3>
+<div class="space-y-4">
+<div class="flex items-start gap-4 p-4 rounded-xl hover:bg-surface-container/50 transition-colors cursor-pointer group">
+<div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary flex-shrink-0 group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined">temple_buddhist</span>
+</div>
+<div>
+<h4 class="text-label-md font-label-md text-on-surface mb-1">伏见稻荷大社</h4>
+<p class="text-label-sm font-label-sm text-on-surface-variant">清晨漫步于成千上万座朱红色的鸟居之间。</p>
+</div>
+</div>
+<div class="flex items-start gap-4 p-4 rounded-xl hover:bg-surface-container/50 transition-colors cursor-pointer group">
+<div class="w-12 h-12 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary flex-shrink-0 group-hover:bg-secondary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined">restaurant</span>
+</div>
+<div>
+<h4 class="text-label-md font-label-md text-on-surface mb-1">道顿堀美食之旅</h4>
+<p class="text-label-sm font-label-sm text-on-surface-variant">傍晚探索大阪充满活力的街头美食。</p>
+</div>
+</div>
+</div>
+<button class="w-full mt-4 py-3 rounded-xl border border-outline-variant text-on-surface font-label-md text-label-md hover:bg-surface-container transition-colors">
+                        查看完整行程
+                    </button>
+</section>
+</div>
+<!-- Right Column: Budget Preview (Span 4) -->
+<div class="lg:col-span-4">
+<section class="glass-card rounded-2xl p-6 md:p-lg sticky top-[100px] hover-lift">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-headline-md font-headline-md text-on-surface">预算预览</h3>
+<span class="material-symbols-outlined text-outline">account_balance_wallet</span>
+</div>
+<div class="text-center mb-8">
+<div class="text-label-sm font-label-sm text-on-surface-variant mb-1 uppercase tracking-wider">预估人均总价</div>
+<div class="text-headline-lg font-headline-lg text-primary ai-gradient-text">$2,450</div>
+</div>
+<div class="space-y-6 mb-8">
+<!-- Progress Bar 1 -->
+<div>
+<div class="flex justify-between text-label-sm font-label-sm mb-2">
+<span class="text-on-surface">机票与交通</span>
+<span class="text-on-surface-variant">$950</span>
+</div>
+<div class="h-2 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 40%"></div>
+</div>
+</div>
+<!-- Progress Bar 2 -->
+<div>
+<div class="flex justify-between text-label-sm font-label-sm mb-2">
+<span class="text-on-surface">住宿 (4★)</span>
+<span class="text-on-surface-variant">$800</span>
+</div>
+<div class="h-2 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 35%"></div>
+</div>
+</div>
+<!-- Progress Bar 3 -->
+<div>
+<div class="flex justify-between text-label-sm font-label-sm mb-2">
+<span class="text-on-surface">餐饮与活动</span>
+<span class="text-on-surface-variant">$700</span>
+</div>
+<div class="h-2 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-secondary-container rounded-full" style="width: 25%"></div>
+</div>
+</div>
+</div>
+<div class="p-4 rounded-xl bg-surface-container-low border border-primary/20 relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex items-start gap-3 relative z-10">
+<span class="material-symbols-outlined text-primary text-[20px] mt-0.5" style="font-variation-settings: 'FILL' 1;">lightbulb</span>
+<div>
+<h4 class="text-label-sm font-label-sm text-on-surface mb-1">AI 建议</h4>
+<p class="text-label-sm font-label-sm text-on-surface-variant leading-relaxed">考虑将行程提前2天，平均可节省约150美元的机票费用。</p>
+</div>
+</div>
+</div>
+<button class="w-full mt-6 py-3 px-4 rounded-xl bg-primary text-on-primary font-label-md text-label-md shadow-md shadow-primary/20 hover:bg-primary-container transition-colors flex items-center justify-center gap-2">
+                        预订机酒
+                        <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</section>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 w-full bg-surface/90 backdrop-blur-xl border-t border-surface-variant z-40 pb-safe">
+<div class="flex justify-around items-center px-2 py-3">
+<a class="flex flex-col items-center gap-1 text-on-surface-variant hover:text-primary p-2" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px] font-label-sm">仪表盘</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary bg-primary-container/20 rounded-xl p-2" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">map</span>
+<span class="text-[10px] font-label-sm font-bold">计划</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant hover:text-primary p-2" href="#">
+<span class="material-symbols-outlined">auto_stories</span>
+<span class="text-[10px] font-label-sm">知识库</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant hover:text-primary p-2" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-label-sm">设置</span>
+</a>
+</div>
+</nav>
+<style>
+        @supports (padding-bottom: env(safe-area-inset-bottom)) {
+            .pb-safe {
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+        }
+        @keyframes kenburns {
+            0% { transform: scale(1) translate(0, 0); }
+            100% { transform: scale(1.05) translate(-1%, -1%); }
+        }
+    </style>
+</body></html>

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI 正在处理 - 智能旅行助手</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&amp;family=Manrope:wght@500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-high": "#dce9ff",
+                      "on-secondary-fixed-variant": "#004c6e",
+                      "background": "#f8f9ff",
+                      "primary-fixed": "#e2dfff",
+                      "inverse-surface": "#213145",
+                      "primary": "#3525cd",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary": "#006591",
+                      "inverse-on-surface": "#eaf1ff",
+                      "inverse-primary": "#c3c0ff",
+                      "surface-tint": "#4d44e3",
+                      "secondary-fixed-dim": "#89ceff",
+                      "on-error-container": "#93000a",
+                      "on-primary-fixed-variant": "#3323cc",
+                      "primary-container": "#4f46e5",
+                      "on-primary-fixed": "#0f0069",
+                      "on-surface": "#0b1c30",
+                      "surface-variant": "#d3e4fe",
+                      "outline": "#777587",
+                      "surface-container": "#e5eeff",
+                      "on-secondary-fixed": "#001e2f",
+                      "on-tertiary-container": "#ffd0d2",
+                      "on-secondary-container": "#004666",
+                      "primary-fixed-dim": "#c3c0ff",
+                      "surface": "#f8f9ff",
+                      "tertiary-container": "#bf0f3c",
+                      "tertiary": "#95002b",
+                      "on-background": "#0b1c30",
+                      "on-primary-container": "#dad7ff",
+                      "tertiary-fixed": "#ffdadb",
+                      "tertiary-fixed-dim": "#ffb2b7",
+                      "surface-container-highest": "#d3e4fe",
+                      "error-container": "#ffdad6",
+                      "on-tertiary-fixed": "#40000d",
+                      "on-error": "#ffffff",
+                      "secondary-fixed": "#c9e6ff",
+                      "on-secondary": "#ffffff",
+                      "on-surface-variant": "#464555",
+                      "on-tertiary": "#ffffff",
+                      "error": "#ba1a1a",
+                      "surface-dim": "#cbdbf5",
+                      "outline-variant": "#c7c4d8",
+                      "surface-bright": "#f8f9ff",
+                      "on-primary": "#ffffff",
+                      "surface-container-low": "#eff4ff",
+                      "on-tertiary-fixed-variant": "#92002a",
+                      "secondary-container": "#39b8fd"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "lg": "32px",
+                      "margin-mobile": "16px",
+                      "md": "24px",
+                      "sm": "16px",
+                      "base": "4px",
+                      "xs": "8px",
+                      "xl": "48px",
+                      "gutter": "24px",
+                      "margin-desktop": "40px"
+              },
+              "fontFamily": {
+                      "body-lg": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "headline-lg": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "label-md": [
+                              "Manrope"
+                      ],
+                      "headline-lg-mobile": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "headline-md": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "body-md": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "label-sm": [
+                              "Manrope"
+                      ],
+                      "display-lg": [
+                              "Plus Jakarta Sans"
+                      ]
+              },
+              "fontSize": {
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .mesh-bg {
+            background: radial-gradient(at 0% 0%, hsla(243,100%,75%,0.3) 0px, transparent 50%),
+                        radial-gradient(at 100% 0%, hsla(200,100%,75%,0.3) 0px, transparent 50%),
+                        radial-gradient(at 100% 100%, hsla(243,100%,75%,0.3) 0px, transparent 50%),
+                        radial-gradient(at 0% 100%, hsla(200,100%,75%,0.3) 0px, transparent 50%);
+            background-color: #f8f9ff;
+        }
+
+        .skeleton-shimmer {
+            background: #d3e4fe;
+            background-image: linear-gradient(to right, #d3e4fe 0%, #eff4ff 20%, #d3e4fe 40%, #d3e4fe 100%);
+            background-repeat: no-repeat;
+            background-size: 800px 100%; 
+            animation-duration: 2s;
+            animation-fill-mode: forwards; 
+            animation-iteration-count: infinite;
+            animation-name: placeholderShimmer;
+            animation-timing-function: linear;
+        }
+
+        @keyframes placeholderShimmer {
+            0% {
+                background-position: -468px 0;
+            }
+            100% {
+                background-position: 468px 0; 
+            }
+        }
+
+        .ai-pulse {
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(0.8);
+                box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.7);
+            }
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 20px rgba(79, 70, 229, 0);
+            }
+            100% {
+                transform: scale(0.8);
+                box-shadow: 0 0 0 0 rgba(79, 70, 229, 0);
+            }
+        }
+
+        .fade-text-enter {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        
+        .fade-text-enter-active {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 500ms, transform 500ms;
+        }
+        
+        .fade-text-exit {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .fade-text-exit-active {
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 500ms, transform 500ms;
+        }
+    </style>
+</head>
+<body class="mesh-bg min-h-screen text-on-surface font-body-md overflow-hidden flex flex-col">
+<!-- Top Navigation (Suppressed for focused loading state as per guidelines) -->
+<main class="flex-1 flex flex-col items-center justify-center p-margin-mobile md:p-margin-desktop relative z-10 w-full max-w-[1920px] mx-auto h-screen">
+<!-- Central AI Loading Core -->
+<div class="flex flex-col items-center z-20 mb-xl w-full max-w-md">
+<div class="relative w-32 h-32 mb-lg flex items-center justify-center">
+<div class="absolute inset-0 rounded-full bg-primary-container ai-pulse opacity-50 blur-xl"></div>
+<div class="absolute inset-2 rounded-full bg-gradient-to-tr from-primary to-secondary shadow-lg flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-white text-5xl" style="font-variation-settings: 'FILL' 1;">
+                        smart_toy
+                    </span>
+</div>
+</div>
+<div class="text-center h-20 w-full relative overflow-hidden flex items-center justify-center">
+<h2 class="text-headline-md font-headline-md text-primary absolute transition-all duration-500 w-full" id="loading-text">
+                    正在检索四川旅行知识库...
+                </h2>
+</div>
+<div class="w-full max-w-xs bg-surface-variant rounded-full h-1.5 mt-sm overflow-hidden">
+<div class="bg-gradient-to-r from-primary to-secondary h-1.5 rounded-full transition-all duration-300 ease-out w-0" id="progress-bar"></div>
+</div>
+</div>
+<!-- Background Skeleton Grid (Simulating Bento Layout) -->
+<div class="absolute inset-0 z-0 flex items-center justify-center opacity-30 pointer-events-none p-4 md:p-12 overflow-hidden">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter w-full max-w-6xl mt-32 md:mt-0">
+<!-- Header Skeleton -->
+<div class="col-span-1 md:col-span-12 h-24 glass-card rounded-xl skeleton-shimmer mb-4"></div>
+<!-- Main Content Skeletons -->
+<div class="col-span-1 md:col-span-8 h-64 glass-card rounded-xl skeleton-shimmer"></div>
+<div class="col-span-1 md:col-span-4 h-64 glass-card rounded-xl skeleton-shimmer hidden md:block"></div>
+<!-- Bottom Row Skeletons -->
+<div class="col-span-1 md:col-span-4 h-48 glass-card rounded-xl skeleton-shimmer hidden md:block"></div>
+<div class="col-span-1 md:col-span-4 h-48 glass-card rounded-xl skeleton-shimmer hidden md:block"></div>
+<div class="col-span-1 md:col-span-4 h-48 glass-card rounded-xl skeleton-shimmer hidden md:block"></div>
+</div>
+</div>
+</main>
+<script>
+        const loadingTexts = [
+            "正在检索四川旅行知识库...",
+            "正在分析预算...",
+            "正在搜寻最佳航班...",
+            "正在挑选高分酒店...",
+            "正在优化行程路线...",
+            "即将完成，请稍候..."
+        ];
+
+        const textElement = document.getElementById('loading-text');
+        const progressBar = document.getElementById('progress-bar');
+        let currentIndex = 0;
+        let progress = 0;
+
+        function updateLoadingState() {
+            // Text Rotation
+            textElement.style.opacity = '0';
+            textElement.style.transform = 'translateY(-10px)';
+            
+            setTimeout(() => {
+                currentIndex = (currentIndex + 1) % loadingTexts.length;
+                textElement.innerText = loadingTexts[currentIndex];
+                textElement.style.transform = 'translateY(10px)';
+                
+                setTimeout(() => {
+                    textElement.style.opacity = '1';
+                    textElement.style.transform = 'translateY(0)';
+                }, 50);
+            }, 500);
+
+            // Progress Bar Logic (simulated)
+            if (progress < 95) {
+                progress += (95 - progress) * 0.15; // Ease towards 95%
+                progressBar.style.width = `${progress}%`;
+            }
+        }
+
+        setInterval(updateLoadingState, 2500);
+
+        // Initial progress kickstart
+        setTimeout(() => {
+             progressBar.style.width = '15%';
+             progress = 15;
+        }, 100);
+    </script>
+</body></html>

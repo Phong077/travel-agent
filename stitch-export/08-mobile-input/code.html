@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>旅游AI - 需求输入</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&amp;family=Manrope:wght@500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#dce9ff",
+                        "on-secondary-fixed-variant": "#004c6e",
+                        "background": "#f8f9ff",
+                        "primary-fixed": "#e2dfff",
+                        "inverse-surface": "#213145",
+                        "primary": "#3525cd",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary": "#006591",
+                        "inverse-on-surface": "#eaf1ff",
+                        "inverse-primary": "#c3c0ff",
+                        "surface-tint": "#4d44e3",
+                        "secondary-fixed-dim": "#89ceff",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed-variant": "#3323cc",
+                        "primary-container": "#4f46e5",
+                        "on-primary-fixed": "#0f0069",
+                        "on-surface": "#0b1c30",
+                        "surface-variant": "#d3e4fe",
+                        "outline": "#777587",
+                        "surface-container": "#e5eeff",
+                        "on-secondary-fixed": "#001e2f",
+                        "on-tertiary-container": "#ffd0d2",
+                        "on-secondary-container": "#004666",
+                        "primary-fixed-dim": "#c3c0ff",
+                        "surface": "#f8f9ff",
+                        "tertiary-container": "#bf0f3c",
+                        "tertiary": "#95002b",
+                        "on-background": "#0b1c30",
+                        "on-primary-container": "#dad7ff",
+                        "tertiary-fixed": "#ffdadb",
+                        "tertiary-fixed-dim": "#ffb2b7",
+                        "surface-container-highest": "#d3e4fe",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed": "#40000d",
+                        "on-error": "#ffffff",
+                        "secondary-fixed": "#c9e6ff",
+                        "on-secondary": "#ffffff",
+                        "on-surface-variant": "#464555",
+                        "on-tertiary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "surface-dim": "#cbdbf5",
+                        "outline-variant": "#c7c4d8",
+                        "surface-bright": "#f8f9ff",
+                        "on-primary": "#ffffff",
+                        "surface-container-low": "#eff4ff",
+                        "on-tertiary-fixed-variant": "#92002a",
+                        "secondary-container": "#39b8fd"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "32px",
+                        "margin-mobile": "16px",
+                        "md": "24px",
+                        "sm": "16px",
+                        "base": "4px",
+                        "xs": "8px",
+                        "xl": "48px",
+                        "gutter": "24px",
+                        "margin-desktop": "40px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "label-md": ["Manrope"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "label-sm": ["Manrope"],
+                        "display-lg": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .mesh-bg {
+            background: radial-gradient(at 0% 0%, hsla(243,100%,70%,0.2) 0px, transparent 50%),
+                        radial-gradient(at 100% 100%, hsla(199,100%,70%,0.2) 0px, transparent 50%);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen mesh-bg flex flex-col md:hidden">
+<!-- Top Navigation (Mobile Version) -->
+<header class="bg-surface/50 backdrop-blur-xl docked full-width top-0 bg-transparent flex justify-between items-center w-full px-margin-mobile py-6 z-50">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[28px]" style="font-variation-settings: 'FILL' 1;">travel_explore</span>
+<h1 class="text-headline-md font-headline-md font-black text-on-surface">旅游AI</h1>
+</div>
+<button class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center border border-white/50 shadow-sm">
+<img alt="Kristin Watson Profile" class="w-full h-full rounded-full object-cover" data-alt="A small, circular profile picture of a young professional woman with dark hair, smiling warmly against a bright, well-lit background. Modern, bright light-mode aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzqjvMdeO1mWC0OucE9VJ9Ivt0m3DmwqunQKlWZhNSme_xN8ckZp9kN2HNuW3wTwFcyikWb6Y_4zCi8rZ4T8hBmGZEXCVgPKTerMkk13eBbfd6KdqeAsRUx67DMu0BLqr5m0odw23i7aIXIyIIQ3vwoRwPwSDHLRmtN6VCkj-AoojbtQjUdrQx22prJjzMJm-NvNWe7CBkuNchTzSwuGEMyrV3TYIBh8QtC9VFE15exEmEmW2IO6ow"/>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 px-margin-mobile pb-24 pt-4 flex flex-col gap-6">
+<!-- Header Section -->
+<div class="mb-4">
+<h2 class="text-headline-lg-mobile font-headline-lg-mobile text-on-background mb-2">规划您的下一次旅行</h2>
+<p class="text-body-md font-body-md text-on-surface-variant">告诉我们您想去哪里，我们将为您打造完美的行程。</p>
+</div>
+<!-- Glassmorphic Form Card -->
+<form class="glass-card rounded-[24px] p-6 shadow-sm flex flex-col gap-6 w-full">
+<!-- Destination Input -->
+<div class="flex flex-col gap-2 w-full">
+<label class="text-label-md font-label-md text-on-surface" for="destination">目的地</label>
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">location_on</span>
+<input class="w-full bg-[#F1F5F9] border-none rounded-xl py-3 pl-12 pr-4 text-body-md font-body-md text-on-surface focus:bg-white focus:ring-2 focus:ring-primary focus:outline-none transition-all duration-300" id="destination" placeholder="例如：日本东京" type="text"/>
+</div>
+</div>
+<!-- Dates Input Group -->
+<div class="flex flex-col gap-4 w-full">
+<div class="flex flex-col gap-2 w-full">
+<label class="text-label-md font-label-md text-on-surface" for="start-date">开始日期</label>
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">calendar_today</span>
+<input class="w-full bg-[#F1F5F9] border-none rounded-xl py-3 pl-12 pr-4 text-body-md font-body-md text-on-surface focus:bg-white focus:ring-2 focus:ring-primary focus:outline-none transition-all duration-300" id="start-date" type="date"/>
+</div>
+</div>
+<div class="flex flex-col gap-2 w-full">
+<label class="text-label-md font-label-md text-on-surface" for="end-date">结束日期</label>
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">calendar_month</span>
+<input class="w-full bg-[#F1F5F9] border-none rounded-xl py-3 pl-12 pr-4 text-body-md font-body-md text-on-surface focus:bg-white focus:ring-2 focus:ring-primary focus:outline-none transition-all duration-300" id="end-date" type="date"/>
+</div>
+</div>
+</div>
+<!-- Travelers & Budget Group -->
+<div class="flex flex-col gap-4 w-full">
+<div class="flex flex-col gap-2 w-full">
+<label class="text-label-md font-label-md text-on-surface" for="travelers">旅客人数</label>
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">group</span>
+<select class="w-full bg-[#F1F5F9] border-none rounded-xl py-3 pl-12 pr-4 text-body-md font-body-md text-on-surface appearance-none focus:bg-white focus:ring-2 focus:ring-primary focus:outline-none transition-all duration-300" id="travelers">
+<option value="1">1 人（独自旅行）</option>
+<option selected="" value="2">2 人（情侣/双人）</option>
+<option value="3">3-5 人（家庭/团体）</option>
+<option value="6">6 人以上（大型团体）</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-outline pointer-events-none">expand_more</span>
+</div>
+</div>
+<div class="flex flex-col gap-2 w-full">
+<label class="text-label-md font-label-md text-on-surface" for="budget">预算等级</label>
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">payments</span>
+<select class="w-full bg-[#F1F5F9] border-none rounded-xl py-3 pl-12 pr-4 text-body-md font-body-md text-on-surface appearance-none focus:bg-white focus:ring-2 focus:ring-primary focus:outline-none transition-all duration-300" id="budget">
+<option value="budget">经济实惠</option>
+<option selected="" value="moderate">适中</option>
+<option value="luxury">豪华</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-outline pointer-events-none">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Interests Chips (AI Suggestion Style) -->
+<div class="flex flex-col gap-2 w-full">
+<label class="text-label-md font-label-md text-on-surface">兴趣与氛围</label>
+<div class="flex flex-wrap gap-2 w-full">
+<button class="bg-secondary/10 border border-secondary/20 text-secondary px-4 py-2 rounded-full text-label-md font-label-md flex items-center gap-1 hover:bg-secondary/20 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">restaurant</span> 美食
+                     </button>
+<button class="bg-primary/10 border border-primary/20 text-primary px-4 py-2 rounded-full text-label-md font-label-md flex items-center gap-1 hover:bg-primary/20 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">museum</span> 文化
+                     </button>
+<button class="bg-surface-container-highest border border-outline-variant text-on-surface-variant px-4 py-2 rounded-full text-label-md font-label-md flex items-center gap-1 hover:bg-surface-container-high transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">nature</span> 自然
+                     </button>
+<button class="bg-surface-container-highest border border-outline-variant text-on-surface-variant px-4 py-2 rounded-full text-label-md font-label-md flex items-center gap-1 hover:bg-surface-container-high transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">nightlife</span> 夜生活
+                     </button>
+</div>
+</div>
+<!-- Additional Notes -->
+<div class="flex flex-col gap-2 w-full">
+<label class="text-label-md font-label-md text-on-surface" for="notes">附加要求</label>
+<textarea class="w-full bg-[#F1F5F9] border-none rounded-xl py-3 px-4 text-body-md font-body-md text-on-surface focus:bg-white focus:ring-2 focus:ring-primary focus:outline-none transition-all duration-300 resize-none" id="notes" placeholder="有任何饮食限制、无障碍需求或必游地标吗？" rows="3"></textarea>
+</div>
+<!-- Submit Button (Primary Gradient) -->
+<button class="w-full bg-gradient-to-r from-primary to-secondary text-on-primary rounded-full py-4 text-headline-md font-headline-md shadow-[0px_4px_14px_rgba(53,37,205,0.4)] flex items-center justify-center gap-2 mt-4 hover:shadow-[0px_6px_20px_rgba(53,37,205,0.6)] active:scale-[0.98] transition-all duration-300" type="submit">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">magic_button</span>
+                生成行程
+            </button>
+</form>
+</main>
+<!-- Bottom Navigation Bar (Mobile) -->
+<nav class="fixed bottom-0 w-full glass-card rounded-t-[24px] flex justify-around items-center px-4 py-3 pb-safe z-50">
+<a class="flex flex-col items-center gap-1 p-2 text-on-surface-variant hover:bg-surface-variant/30 rounded-xl transition-all duration-300" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-label-sm font-label-sm">仪表盘</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 bg-primary-container text-on-primary-container rounded-xl font-bold transition-all duration-300 scale-95" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">map</span>
+<span class="text-label-sm font-label-sm">计划</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-on-surface-variant hover:bg-surface-variant/30 rounded-xl transition-all duration-300" href="#">
+<span class="material-symbols-outlined">auto_stories</span>
+<span class="text-label-sm font-label-sm">知识库</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-on-surface-variant hover:bg-surface-variant/30 rounded-xl transition-all duration-300" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-label-sm font-label-sm">设置</span>
+</a>
+</nav>
+<!-- Safe area padding for mobile browsers -->
+<style>
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 20px); }
+    </style>
+</body></html>
