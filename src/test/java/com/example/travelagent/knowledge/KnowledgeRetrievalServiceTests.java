@@ -73,4 +73,24 @@ class KnowledgeRetrievalServiceTests {
                 .extracting(KnowledgeSearchResult::source)
                 .allMatch(source -> source.startsWith("common/"));
     }
+
+    @Test
+    void shouldUseVectorSimilarityForRelatedTravelIntent() {
+        PlanTripRequest request = new PlanTripRequest(
+                "重庆",
+                "四川",
+                5,
+                2,
+                6000,
+                List.of("山水湖泊", "摄影"),
+                List.of("过度奔波")
+        );
+
+        List<KnowledgeSearchResult> results = retrievalService.retrieve(request);
+
+        assertThat(results).isNotEmpty();
+        assertThat(results)
+                .extracting(KnowledgeSearchResult::title)
+                .anyMatch(title -> title.contains("九寨沟") || title.contains("川西"));
+    }
 }

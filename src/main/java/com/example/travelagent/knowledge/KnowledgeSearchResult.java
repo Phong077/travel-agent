@@ -7,7 +7,7 @@ public record KnowledgeSearchResult(
         String source,
         //命中的具体内容片段
         String content,
-        //匹配分数。第一版我们用关键词命中次数来表示相关度。
+        //匹配分数。当前由关键词权重分和本地向量相似度分共同组成。
         int score
 ) {
 }

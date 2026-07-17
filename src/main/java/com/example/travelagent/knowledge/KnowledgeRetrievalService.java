@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 @Service
@@ -18,6 +19,7 @@ public class KnowledgeRetrievalService {
     private record WeightedKeyword(String value, int weight) {
     }
     private final List<KnowledgeDocument> documents;
+    private final KnowledgeVectorIndex vectorIndex;
     private final DestinationResolver destinationResolver;
 
     public KnowledgeRetrievalService(
@@ -25,18 +27,21 @@ public class KnowledgeRetrievalService {
             DestinationResolver destinationResolver
     ) {
         this.documents = knowledgeBaseLoader.loadDocuments();
+        this.vectorIndex = new KnowledgeVectorIndex(documents);
         this.destinationResolver = destinationResolver;
     }
 
     public List<KnowledgeSearchResult> retrieve(PlanTripRequest request) {
         String destinationKey = destinationResolver.resolve(request.destination());
         List<WeightedKeyword> keywords = buildKeywords(request);
+        String query = buildVectorQuery(request, keywords);
+        Map<KnowledgeDocument, Double> vectorScores = vectorIndex.search(query);
 
-        log.info("Retrieval destinationKey={}, keywords={}", destinationKey, formatKeywords(keywords));
+        log.info("Retrieval destinationKey={}, keywords={}, vectorQuery={}", destinationKey, formatKeywords(keywords), query);
 
         List<KnowledgeSearchResult> results = documents.stream()
                 .filter(document -> isSearchableForDestination(document, destinationKey))
-                .map(document -> toSearchResult(document, keywords))
+                .map(document -> toSearchResult(document, keywords, vectorScores.getOrDefault(document, 0.0)))
                 .filter(result -> result.score() > 0)
                 .sorted(Comparator.comparingInt(KnowledgeSearchResult::score).reversed())
                 .limit(TOP_K)
@@ -61,7 +66,11 @@ public class KnowledgeRetrievalService {
                 .reduce((left, right) -> left + ", " + right)
                 .orElse("none");
     }
-    private KnowledgeSearchResult toSearchResult(KnowledgeDocument document, List<WeightedKeyword> keywords) {
+    private KnowledgeSearchResult toSearchResult(
+            KnowledgeDocument document,
+            List<WeightedKeyword> keywords,
+            double vectorScore
+    ) {
         int score = 0;
         String searchableText = document.title() + "\n" + document.content();
 
@@ -70,6 +79,9 @@ public class KnowledgeRetrievalService {
                 score += keyword.weight();
             }
         }
+
+        int vectorPoints = (int) Math.round(vectorScore * 10);
+        score += vectorPoints;
 
         return new KnowledgeSearchResult(
                 document.title(),
@@ -98,6 +110,22 @@ public class KnowledgeRetrievalService {
                 .values()
                 .stream()
                 .toList();
+    }
+
+    private String buildVectorQuery(PlanTripRequest request, List<WeightedKeyword> keywords) {
+        List<String> parts = new ArrayList<>();
+        parts.add(request.destination());
+        parts.add(request.departureCity());
+        parts.add("旅行 行程 景点 美食 交通 天气 住宿 节奏");
+        keywords.forEach(keyword -> parts.add(keyword.value()));
+        if (request.avoid() != null) {
+            parts.addAll(request.avoid());
+        }
+
+        return parts.stream()
+                .filter(value -> value != null && !value.isBlank())
+                .reduce((left, right) -> left + " " + right)
+                .orElse("");
     }
 
     private void addIfPresent(List<WeightedKeyword> keywords, String value, int weight) {
