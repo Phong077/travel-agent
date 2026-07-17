@@ -59,7 +59,7 @@
           <p class="section-copy">{{ previewMeta }}</p>
           <div class="trip-preview-image">
             <span>{{ request.departureCity }} 出发</span>
-            <strong>{{ result.destination }}</strong>
+            <strong>{{ hasResult ? result.destination : '等待填写' }}</strong>
           </div>
           <div class="bar-row" style="margin-top: 18px">
             <span>准备进度</span>

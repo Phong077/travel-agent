@@ -265,14 +265,18 @@ async function submitPlan() {
     return
   }
 
-  setTripRequest(clonePlanRequest(form))
+  // 锁定本次提交的快照，后续请求始终使用这份数据，避免被旧会话状态覆盖。
+  const submittedRequest = clonePlanRequest(form)
+  setTripRequest(submittedRequest)
   setGenerationMode(selectedGenerationMode.value)
   tripState.loading = true
   tripState.error = ''
   await router.push('/loading')
 
   try {
-    const result = selectedGenerationMode.value === 'agent' ? await planTripWithAgent(tripState.request) : await planTrip(tripState.request)
+    const result = selectedGenerationMode.value === 'agent'
+      ? await planTripWithAgent(submittedRequest)
+      : await planTrip(submittedRequest)
     setTripResult(result)
     await router.push('/result')
   } catch (error) {

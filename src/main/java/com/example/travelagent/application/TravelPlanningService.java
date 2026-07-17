@@ -18,6 +18,7 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.ArrayList;
 
 @Service
 public class TravelPlanningService {
@@ -82,8 +83,13 @@ public class TravelPlanningService {
 
         String prompt = buildPrompt(request, references, budgetAnalysis, weatherInfo, hasDedicatedKnowledgeBase);
 
-        GenerationResult generationResult = generateValidatedTripPlan(prompt, request);
-        return enrichResponse(generationResult, references, budgetAnalysis, weatherInfo, toolCalls);
+        try {
+            GenerationResult generationResult = generateValidatedTripPlan(prompt, request);
+            return enrichResponse(generationResult, references, budgetAnalysis, weatherInfo, toolCalls);
+        } catch (RuntimeException exception) {
+            log.warn("AI generation failed, using backend fallback itinerary. destination={}", request.destination(), exception);
+            return buildFallbackResponse(request, references, budgetAnalysis, weatherInfo, toolCalls);
+        }
     }
 
     private GenerationResult generateValidatedTripPlan(String prompt, PlanTripRequest request) {
@@ -137,6 +143,93 @@ public class TravelPlanningService {
                 toolCalls,
                 new GenerationMetadata("stable", generationResult.attempts(), true)
         );
+    }
+
+    private TripPlanResponse buildFallbackResponse(
+            PlanTripRequest request,
+            List<KnowledgeSearchResult> references,
+            BudgetAnalysis budgetAnalysis,
+            WeatherInfo weatherInfo,
+            List<ToolCallRecord> toolCalls
+    ) {
+        List<ToolCallRecord> fallbackToolCalls = new ArrayList<>(toolCalls);
+        fallbackToolCalls.add(new ToolCallRecord(
+                "backend.fallback.itinerary",
+                "后端规则兜底行程",
+                "已启用",
+                "大模型调用暂不可用时，由后端根据用户目的地、偏好、预算、天气和知识库引用生成兜底行程。"
+        ));
+
+        return new TripPlanResponse(
+                request.destination(),
+                request.days(),
+                buildFallbackSummary(request, references, budgetAnalysis, weatherInfo),
+                buildFallbackDays(request, references, weatherInfo),
+                toKnowledgeReferences(references),
+                budgetAnalysis,
+                weatherInfo,
+                fallbackToolCalls,
+                new GenerationMetadata("backend-fallback", 0, false)
+        );
+    }
+
+    private String buildFallbackSummary(
+            PlanTripRequest request,
+            List<KnowledgeSearchResult> references,
+            BudgetAnalysis budgetAnalysis,
+            WeatherInfo weatherInfo
+    ) {
+        String referenceText = references.isEmpty()
+                ? "当前目的地暂无专属知识库，行程会结合通用旅行规则安排。"
+                : "已参考 " + references.size() + " 条知识库资料。";
+
+        return "这是后端规则兜底生成的“" + request.destination() + "”旅行计划。"
+                + referenceText
+                + "预算等级为" + budgetAnalysis.level()
+                + "，天气风险为" + weatherInfo.riskLevel()
+                + "，行程会尽量贴合偏好并避开用户限制。";
+    }
+
+    private List<com.example.travelagent.domain.ItineraryDay> buildFallbackDays(
+            PlanTripRequest request,
+            List<KnowledgeSearchResult> references,
+            WeatherInfo weatherInfo
+    ) {
+        List<String> themes = List.of(
+                "抵达与城市初印象",
+                "核心景点与本地体验",
+                "自然风光与轻松探索",
+                "文化街区与深度漫游",
+                "返程前的弹性安排"
+        );
+        List<com.example.travelagent.domain.ItineraryDay> days = new ArrayList<>();
+        String preferenceText = formatList(request.preferences());
+        String avoidText = formatList(request.avoid());
+
+        for (int index = 0; index < request.days(); index++) {
+            int day = index + 1;
+            String theme = request.destination() + (index < themes.size() ? themes.get(index) : "第 " + day + " 天弹性探索");
+            String referenceTitle = references.isEmpty()
+                    ? request.destination() + "核心区域"
+                    : references.get(Math.min(index, references.size() - 1)).title();
+            String weatherTip = weatherInfo.dailyTips() == null || weatherInfo.dailyTips().isEmpty()
+                    ? "出发前查看实时天气。"
+                    : weatherInfo.dailyTips().get(Math.min(index, weatherInfo.dailyTips().size() - 1));
+
+            days.add(new com.example.travelagent.domain.ItineraryDay(
+                    day,
+                    theme,
+                    day == 1
+                            ? "从" + request.departureCity() + "出发前往" + request.destination() + "，抵达后优先入住交通便利区域，保留休整时间。"
+                            : "上午围绕“" + referenceTitle + "”安排轻量游览，避免过早出发和过度赶路。",
+                    "下午结合“" + preferenceText + "”安排体验，优先选择交通顺路、节奏稳定的地点。"
+                            + "天气提醒：" + weatherTip,
+                    "晚上安排本地餐饮、城市漫步或轻松休息，注意避开“" + avoidText + "”。",
+                    "这是后端规则兜底交通建议：优先选择公共交通、城际铁路和短距离步行，跨城或远距离景点需要预留交通缓冲。"
+            ));
+        }
+
+        return days;
     }
 
     private List<ToolCallRecord> buildServiceToolCalls(

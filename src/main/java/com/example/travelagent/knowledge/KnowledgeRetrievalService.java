@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 @Service
 public class KnowledgeRetrievalService {
     private static final Logger log = LoggerFactory.getLogger(KnowledgeRetrievalService.class);
@@ -21,20 +23,37 @@ public class KnowledgeRetrievalService {
     private final List<KnowledgeDocument> documents;
     private final KnowledgeVectorIndex vectorIndex;
     private final DestinationResolver destinationResolver;
+    private final Optional<PgVectorKnowledgeStore> pgVectorKnowledgeStore;
+
+    @Autowired
+    public KnowledgeRetrievalService(
+            KnowledgeBaseLoader knowledgeBaseLoader,
+            DestinationResolver destinationResolver,
+            Optional<PgVectorKnowledgeStore> pgVectorKnowledgeStore
+    ) {
+        this.documents = knowledgeBaseLoader.loadDocuments();
+        this.vectorIndex = new KnowledgeVectorIndex(documents);
+        this.destinationResolver = destinationResolver;
+        this.pgVectorKnowledgeStore = pgVectorKnowledgeStore;
+    }
 
     public KnowledgeRetrievalService(
             KnowledgeBaseLoader knowledgeBaseLoader,
             DestinationResolver destinationResolver
     ) {
-        this.documents = knowledgeBaseLoader.loadDocuments();
-        this.vectorIndex = new KnowledgeVectorIndex(documents);
-        this.destinationResolver = destinationResolver;
+        this(knowledgeBaseLoader, destinationResolver, Optional.empty());
     }
 
     public List<KnowledgeSearchResult> retrieve(PlanTripRequest request) {
         String destinationKey = destinationResolver.resolve(request.destination());
         List<WeightedKeyword> keywords = buildKeywords(request);
         String query = buildVectorQuery(request, keywords);
+        List<KnowledgeSearchResult> pgVectorResults = retrieveFromPgVector(request, destinationKey, query);
+        if (!pgVectorResults.isEmpty()) {
+            logMatchedResults("pgvector", pgVectorResults);
+            return pgVectorResults;
+        }
+
         Map<KnowledgeDocument, Double> vectorScores = vectorIndex.search(query);
 
         log.info("Retrieval destinationKey={}, keywords={}, vectorQuery={}", destinationKey, formatKeywords(keywords), query);
@@ -47,14 +66,35 @@ public class KnowledgeRetrievalService {
                 .limit(TOP_K)
                 .toList();
 
+        logMatchedResults("local-hybrid", results);
+
+        return results;
+    }
+
+    private List<KnowledgeSearchResult> retrieveFromPgVector(
+            PlanTripRequest request,
+            String destinationKey,
+            String query
+    ) {
+        if (pgVectorKnowledgeStore.isEmpty()) {
+            return List.of();
+        }
+
+        List<KnowledgeSearchResult> results = pgVectorKnowledgeStore.get().search(request, destinationKey, query, TOP_K);
+        if (!results.isEmpty()) {
+            log.info("Retrieval destinationKey={}, vectorStore=pgvector, vectorQuery={}", destinationKey, query);
+        }
+        return results;
+    }
+
+    private void logMatchedResults(String retrievalMode, List<KnowledgeSearchResult> results) {
         results.forEach(result -> log.info(
-                "Knowledge matched: title={}, source={}, score={}",
+                "Knowledge matched: mode={}, title={}, source={}, score={}",
+                retrievalMode,
                 result.title(),
                 result.source(),
                 result.score()
         ));
-
-        return results;
     }
 
     private boolean isSearchableForDestination(KnowledgeDocument document, String destinationKey) {

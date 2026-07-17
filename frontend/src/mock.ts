@@ -2,7 +2,8 @@ import type { PlanTripRequest, TripPlanResponse, KnowledgeSearchResult } from '.
 
 export const defaultRequest: PlanTripRequest = {
   departureCity: '重庆',
-  destination: '四川',
+  // 目的地必须由用户明确填写，避免旧的示例目的地影响真实请求。
+  destination: '',
   days: 5,
   travelers: 2,
   budget: 6000,

@@ -26,6 +26,17 @@ interface TripState {
 }
 
 const HISTORY_KEY = 'travel-agent-history'
+const SESSION_VERSION_KEY = 'travel-agent-session-version'
+const SESSION_VERSION = '2'
+
+// 当前结果和当前请求属于临时会话数据。升级数据结构后清理旧快照，避免旧目的地被误当成新结果。
+if (window.sessionStorage.getItem(SESSION_VERSION_KEY) !== SESSION_VERSION) {
+  window.sessionStorage.removeItem('travel-agent-result')
+  window.sessionStorage.removeItem('travel-agent-request')
+  window.sessionStorage.removeItem('travel-agent-generation-mode')
+  window.sessionStorage.setItem(SESSION_VERSION_KEY, SESSION_VERSION)
+}
+
 const savedResult = readSessionJson<Partial<TripPlanResponse>>('travel-agent-result')
 const savedRequest = readSessionJson<Partial<PlanTripRequest>>('travel-agent-request')
 const savedGenerationMode = window.sessionStorage.getItem('travel-agent-generation-mode')
@@ -99,6 +110,7 @@ export function resetTripSession() {
   window.sessionStorage.removeItem('travel-agent-request')
   window.sessionStorage.removeItem('travel-agent-result')
   window.sessionStorage.removeItem('travel-agent-generation-mode')
+  window.sessionStorage.setItem(SESSION_VERSION_KEY, SESSION_VERSION)
 }
 
 export function loadTripHistoryItem(id: string) {

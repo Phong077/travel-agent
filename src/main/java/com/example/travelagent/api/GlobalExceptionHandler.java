@@ -1,6 +1,8 @@
 package com.example.travelagent.api;
 
 import com.example.travelagent.application.AiResponseParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,6 +20,8 @@ import java.util.Objects;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     /**
      * 处理 AI 返回内容解析失败。
      *
@@ -27,6 +31,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AiResponseParseException.class)
     @ResponseStatus(HttpStatus.BAD_GATEWAY)
     public ApiResponse<Void> handleAiResponseParseException(AiResponseParseException exception) {
+        log.warn("AI response parse failed.", exception);
         return ApiResponse.fail(
                 50201,
                 "AI 返回的旅行计划格式不正确，请稍后重试。"
@@ -64,6 +69,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiResponse<Void> handleException(Exception exception) {
+        log.error("Unhandled API exception.", exception);
         return ApiResponse.fail(
                 50001,
                 "系统内部异常，请稍后重试。"

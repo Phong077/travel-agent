@@ -4,6 +4,7 @@ import com.example.travelagent.domain.PlanTripRequest;
 import com.example.travelagent.domain.WeatherInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -22,6 +23,7 @@ public class WeatherService {
     private final String amapApiKey;
     private final boolean amapWeatherEnabled;
 
+    @Autowired
     public WeatherService(
             @Value("${amap.api-key:}") String amapApiKey,
             @Value("${amap.weather.enabled:true}") boolean amapWeatherEnabled

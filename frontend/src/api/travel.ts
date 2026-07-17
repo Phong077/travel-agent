@@ -6,6 +6,7 @@ const PLAN_TIMEOUT_MS = 45_000
 const SEARCH_TIMEOUT_MS = 12_000
 const HEALTH_TIMEOUT_MS = 3_000
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/$/, '')
+const DEV_BACKEND_TARGET = import.meta.env.VITE_BACKEND_PROXY_TARGET || 'http://localhost:8092'
 
 function buildApiUrl(path: string) {
   return `${API_BASE_URL}${path}`
@@ -26,7 +27,7 @@ async function postJson<T>(url: string, body: unknown, timeoutMs: number): Promi
     })
 
     if (!response.ok) {
-      throw new Error(`请求失败：HTTP ${response.status}`)
+      throw new Error(await buildHttpErrorMessage(response))
     }
 
     return parseApiPayload<T>(await response.json())
@@ -52,7 +53,7 @@ async function getJson<T>(url: string, timeoutMs: number): Promise<T> {
     })
 
     if (!response.ok) {
-      throw new Error(`请求失败：HTTP ${response.status}`)
+      throw new Error(await buildHttpErrorMessage(response))
     }
 
     return parseApiPayload<T>(await response.json())
@@ -79,8 +80,45 @@ function parseApiPayload<T>(payload: unknown): T {
   return payload as T
 }
 
+async function buildHttpErrorMessage(response: Response) {
+  const responseText = await response.text().catch(() => '')
+
+  if (!API_BASE_URL && response.status === 500 && response.url.includes('/api/')) {
+    return `前端代理无法连接后端服务。请确认 Spring Boot 已启动，并监听 ${DEV_BACKEND_TARGET}。`
+  }
+
+  if (responseText) {
+    return `请求失败：HTTP ${response.status}，${responseText.slice(0, 120)}`
+  }
+
+  return `请求失败：HTTP ${response.status}`
+}
+
 function getFallbackReason(error: unknown) {
   return error instanceof Error ? error.message : '未知错误'
+}
+
+function shouldUseFrontendMock(error: unknown) {
+  if (!(error instanceof Error)) {
+    return true
+  }
+
+  return (
+    error.message.includes('前端代理无法连接后端服务') ||
+    error.message.includes('请求超时') ||
+    error.message.includes('Failed to fetch') ||
+    error.message.includes('NetworkError')
+  )
+}
+
+function validateTripPlanMatchesRequest(result: TripPlanResponse, request: PlanTripRequest) {
+  if (result.destination?.trim() !== request.destination.trim()) {
+    throw new Error(`后端返回的目的地“${result.destination ?? ''}”与本次请求“${request.destination}”不一致，请重试。`)
+  }
+
+  if (result.totalDays !== request.days) {
+    throw new Error(`后端返回的旅行天数与本次请求不一致，请重试。`)
+  }
 }
 
 export async function checkBackendHealth(): Promise<HealthStatus | null> {
@@ -98,9 +136,13 @@ export async function checkBackendHealth(): Promise<HealthStatus | null> {
 export async function planTrip(request: PlanTripRequest): Promise<TripPlanResponse> {
   try {
     const result = await postJson<TripPlanResponse>(buildApiUrl('/api/trips/plan'), request, PLAN_TIMEOUT_MS)
+    validateTripPlanMatchesRequest(result, request)
     markApiReady()
     return result
   } catch (error) {
+    if (!shouldUseFrontendMock(error)) {
+      throw error
+    }
     console.warn('后端暂不可用，使用前端 mock 数据兜底。', error)
     markApiFallback(`后端接口暂不可用，当前展示的是前端 mock 演示数据。原因：${getFallbackReason(error)}。`)
     await new Promise((resolve) => window.setTimeout(resolve, 900))
@@ -111,9 +153,13 @@ export async function planTrip(request: PlanTripRequest): Promise<TripPlanRespon
 export async function planTripWithAgent(request: PlanTripRequest): Promise<TripPlanResponse> {
   try {
     const result = await postJson<TripPlanResponse>(buildApiUrl('/api/agent/trips/plan'), request, PLAN_TIMEOUT_MS)
+    validateTripPlanMatchesRequest(result, request)
     markApiReady()
     return result
   } catch (error) {
+    if (!shouldUseFrontendMock(error)) {
+      throw error
+    }
     console.warn('Agent 接口暂不可用，使用前端 mock 数据兜底。', error)
     markApiFallback(`Agent Tool Calling 接口暂不可用，当前展示的是前端 mock 演示数据。原因：${getFallbackReason(error)}。`)
     await new Promise((resolve) => window.setTimeout(resolve, 900))

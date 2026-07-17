@@ -52,6 +52,21 @@ POST /api/knowledge/search
 /api -> http://localhost:8092
 ```
 
+如果终端出现：
+
+```text
+[vite] http proxy error: /api/health
+AggregateError [ECONNREFUSED]
+```
+
+说明前端已经启动，但 `localhost:8092` 上没有可连接的后端服务。需要先启动 Spring Boot 后端，或者确认后端端口是否和代理配置一致。
+
+如果后端不是 `8092` 端口，可以在 `.env` 中配置：
+
+```text
+VITE_BACKEND_PROXY_TARGET=http://localhost:你的后端端口
+```
+
 如果前端和后端分开部署，可以复制 `.env.example` 为 `.env`，并配置：
 
 ```text

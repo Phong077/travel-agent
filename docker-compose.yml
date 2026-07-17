@@ -8,9 +8,28 @@ services:
       DASHSCOPE_MODEL: ${DASHSCOPE_MODEL:-qwen-plus}
       AMAP_API_KEY: ${AMAP_API_KEY:-}
       AMAP_WEATHER_ENABLED: ${AMAP_WEATHER_ENABLED:-true}
+      RAG_VECTOR_STORE_ENABLED: ${RAG_VECTOR_STORE_ENABLED:-false}
+      RAG_VECTOR_STORE_JDBC_URL: jdbc:postgresql://postgres:5432/travel_agent
+      RAG_VECTOR_STORE_USERNAME: travel_agent
+      RAG_VECTOR_STORE_PASSWORD: travel_agent
+      DASHSCOPE_EMBEDDING_MODEL: ${DASHSCOPE_EMBEDDING_MODEL:-text-embedding-v4}
+      DASHSCOPE_EMBEDDING_DIMENSIONS: ${DASHSCOPE_EMBEDDING_DIMENSIONS:-1024}
       APP_CORS_ALLOWED_ORIGINS: http://localhost:5173,http://127.0.0.1:5173
+    depends_on:
+      - postgres
     ports:
       - "8092:8092"
+
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: travel_agent
+      POSTGRES_USER: travel_agent
+      POSTGRES_PASSWORD: travel_agent
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
 
   frontend:
     build:
@@ -22,3 +41,6 @@ services:
       - backend
     ports:
       - "5173:80"
+
+volumes:
+  postgres-data:
