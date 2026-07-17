@@ -1,5 +1,13 @@
 <template>
   <AppShell>
+    <EmptyTripState
+      v-if="!hasResult"
+      title="还没有每日行程"
+      description="生成旅行计划后，系统会在这里按天拆分上午、下午、晚上和交通建议。"
+      icon="route"
+    />
+
+    <template v-else>
     <section>
       <p class="section-eyebrow">每日行程详情</p>
       <h1 class="section-title">探索{{ result.destination }}</h1>
@@ -76,30 +84,52 @@
             </div>
 
             <div class="day-actions">
-              <button class="ghost-action" type="button">查看知识依据</button>
+              <button class="ghost-action" type="button" @click="copyDay(day.day)">复制当天安排</button>
               <RouterLink class="primary-action" to="/references">查看引用来源</RouterLink>
             </div>
+            <p v-if="copyMessageByDay[day.day]" class="inline-feedback">{{ copyMessageByDay[day.day] }}</p>
           </div>
         </article>
       </div>
     </section>
+    </template>
   </AppShell>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import AppShell from '../components/AppShell.vue'
+import EmptyTripState from '../components/EmptyTripState.vue'
 import { tripState } from '../store/tripStore'
+import { copyTextToClipboard } from '../utils/clipboard'
+import { formatItineraryDay } from '../utils/tripFormatter'
 
+const hasResult = computed(() => tripState.hasResult)
 const result = computed(() => tripState.result)
 const expandedDay = ref(1)
+const copyMessageByDay = reactive<Record<number, string>>({})
 
 function toggleDay(day: number) {
   expandedDay.value = day
 }
 
 function getDayDistance(day: number) {
-  const distances = ['10 月 12 日 · 3.5 公里', '10 月 13 日 · 42 公里', '10 月 14 日 · 156 公里', '10 月 15 日 · 82 公里', '10 月 16 日 · 返程']
+  const distances = ['轻松抵达', '核心游览', '深度体验', '弹性安排', '返程收尾']
   return distances[day - 1] ?? '轻松路线'
+}
+
+async function copyDay(dayNumber: number) {
+  const day = result.value.days.find((item) => item.day === dayNumber)
+  if (!day) {
+    return
+  }
+
+  copyMessageByDay[dayNumber] = ''
+  try {
+    await copyTextToClipboard(formatItineraryDay(result.value.destination, day))
+    copyMessageByDay[dayNumber] = '已复制当天安排'
+  } catch {
+    copyMessageByDay[dayNumber] = '复制失败，请稍后重试'
+  }
 }
 </script>

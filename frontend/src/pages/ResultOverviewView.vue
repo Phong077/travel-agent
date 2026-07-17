@@ -1,9 +1,17 @@
 <template>
   <AppShell>
+    <EmptyTripState
+      v-if="!hasResult"
+      title="还没有可查看的旅行计划"
+      description="先创建一次行程，生成完成后这里会展示概览、预算分析和知识库来源。"
+      icon="map"
+    />
+
+    <template v-else>
     <section class="trip-hero">
       <div>
         <span class="hero-badge">{{ result.destination }} · {{ result.totalDays }} 天</span>
-        <h1 class="hero-title" style="margin-top: 16px">玩转四川</h1>
+        <h1 class="hero-title" style="margin-top: 16px">玩转{{ result.destination }}</h1>
         <p style="max-width: 720px; line-height: 1.8">{{ result.summary }}</p>
       </div>
       <RouterLink class="ghost-action" to="/plan" style="position: absolute; right: 34px; bottom: 34px">修改需求</RouterLink>
@@ -50,37 +58,91 @@
       </div>
 
       <aside class="panel">
+        <KnowledgeBaseSummary :references="result.references" />
+
         <p class="section-eyebrow">预算概览</p>
         <div class="budget-bars">
           <div class="bar-row">
             <span>人均预算</span>
             <strong>¥{{ result.budgetAnalysis?.perPersonBudget ?? 0 }}</strong>
-            <div class="bar"><span style="width: 74%"></span></div>
+            <div class="bar"><span :style="{ width: perPersonBudgetWidth }"></span></div>
           </div>
           <div class="bar-row">
             <span>每日人均</span>
             <strong>¥{{ result.budgetAnalysis?.perPersonDailyBudget ?? 0 }}</strong>
-            <div class="bar"><span style="width: 62%"></span></div>
+            <div class="bar"><span :style="{ width: dailyBudgetWidth }"></span></div>
           </div>
           <div class="bar-row">
             <span>舒适度</span>
             <strong>{{ result.budgetAnalysis?.level ?? '适中' }}</strong>
-            <div class="bar"><span style="width: 68%"></span></div>
+            <div class="bar"><span :style="{ width: comfortLevelWidth }"></span></div>
           </div>
         </div>
         <p class="section-copy" style="margin-top: 22px">{{ result.budgetAnalysis?.suggestion }}</p>
         <RouterLink class="primary-action" to="/days" style="margin-top: 20px; width: 100%">查看行程</RouterLink>
         <RouterLink class="ghost-action" to="/references" style="margin-top: 12px; width: 100%">查看引用来源</RouterLink>
+        <button class="ghost-action" type="button" style="margin-top: 12px; width: 100%" @click="copySummary">复制行程摘要</button>
+        <button class="ghost-action" type="button" style="margin-top: 12px; width: 100%" @click="restartPlan">清空并重新规划</button>
+        <p v-if="copyMessage" class="inline-feedback">{{ copyMessage }}</p>
       </aside>
     </section>
+    </template>
   </AppShell>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import AppShell from '../components/AppShell.vue'
-import { tripState } from '../store/tripStore'
+import EmptyTripState from '../components/EmptyTripState.vue'
+import KnowledgeBaseSummary from '../components/KnowledgeBaseSummary.vue'
+import { resetTripSession, tripState } from '../store/tripStore'
+import { copyTextToClipboard } from '../utils/clipboard'
+import { formatTripPlanSummary } from '../utils/tripFormatter'
 
+const router = useRouter()
+const hasResult = computed(() => tripState.hasResult)
 const result = computed(() => tripState.result)
 const request = computed(() => tripState.request)
+const copyMessage = ref('')
+const perPersonBudgetWidth = computed(() => getProgressWidth(result.value.budgetAnalysis?.perPersonBudget ?? 0, 6000))
+const dailyBudgetWidth = computed(() => getProgressWidth(result.value.budgetAnalysis?.perPersonDailyBudget ?? 0, 1500))
+const comfortLevelWidth = computed(() => `${getComfortProgress(result.value.budgetAnalysis?.level ?? '')}%`)
+
+function getProgressWidth(value: number, maxValue: number) {
+  if (value <= 0) {
+    return '0%'
+  }
+
+  const progress = Math.min(Math.max((value / maxValue) * 100, 12), 100)
+  return `${Math.round(progress)}%`
+}
+
+function getComfortProgress(level: string) {
+  if (level.includes('经济')) {
+    return 36
+  }
+  if (level.includes('奢华') || level.includes('宽裕') || level.includes('高')) {
+    return 92
+  }
+  if (level.includes('舒适')) {
+    return 76
+  }
+  return 62
+}
+
+async function copySummary() {
+  copyMessage.value = ''
+  try {
+    await copyTextToClipboard(formatTripPlanSummary(result.value, request.value))
+    copyMessage.value = '已复制行程摘要'
+  } catch {
+    copyMessage.value = '复制失败，请稍后重试'
+  }
+}
+
+async function restartPlan() {
+  resetTripSession()
+  await router.push('/plan')
+}
 </script>

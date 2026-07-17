@@ -216,6 +216,12 @@ a {
   font-weight: 700;
 }
 
+.api-status-banner.ready {
+  color: #00513a;
+  background: rgba(208, 245, 226, 0.72);
+  border-color: rgba(0, 122, 85, 0.24);
+}
+
 .topbar-tabs a.router-link-active {
   color: var(--primary);
 }
@@ -412,6 +418,46 @@ a {
   margin-top: 20px;
 }
 
+.empty-trip-card {
+  min-height: 520px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 48px 24px;
+  text-align: center;
+  border-radius: 22px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.86), rgba(239, 244, 255, 0.88)),
+    radial-gradient(circle at top, rgba(57, 184, 253, 0.2), transparent 36%);
+  border: 1px solid rgba(199, 196, 216, 0.58);
+  box-shadow: var(--shadow);
+}
+
+.empty-trip-card .section-copy {
+  max-width: 540px;
+}
+
+.empty-trip-card .primary-action {
+  margin-top: 10px;
+}
+
+.empty-trip-icon {
+  width: 62px;
+  height: 62px;
+  display: grid;
+  place-items: center;
+  border-radius: 20px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #3525cd, #39b8fd);
+  box-shadow: 0 18px 40px rgba(53, 37, 205, 0.2);
+}
+
+.empty-trip-icon .material-symbols-outlined {
+  font-size: 32px;
+}
+
 .trip-hero {
   min-height: 420px;
   border-radius: 0 0 22px 22px;
@@ -520,6 +566,26 @@ a {
   gap: 12px;
 }
 
+.plan-custom-row {
+  margin-top: 16px;
+}
+
+.plan-custom-row .debug-add-control {
+  width: min(520px, 100%);
+}
+
+.selected-chip-panel {
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: 14px;
+  background: rgba(239, 244, 255, 0.58);
+  border: 1px solid rgba(199, 196, 216, 0.44);
+}
+
+.selected-chip-panel .chip .material-symbols-outlined {
+  font-size: 16px;
+}
+
 .page-actions {
   display: flex;
   justify-content: flex-end;
@@ -531,6 +597,59 @@ a {
   display: flex;
   flex-direction: column;
   gap: 18px;
+}
+
+.knowledge-base-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 22px;
+  padding: 16px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(226, 223, 255, 0.86), rgba(223, 243, 255, 0.86));
+  border: 1px solid rgba(53, 37, 205, 0.16);
+}
+
+.knowledge-base-card h3 {
+  margin: 0 0 8px;
+  color: var(--on-surface);
+  font-size: 18px;
+  line-height: 1.3;
+}
+
+.knowledge-base-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.knowledge-base-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  color: #004c6e;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(79, 70, 229, 0.14);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.knowledge-base-badge.common {
+  color: #595100;
+  background: rgba(255, 248, 210, 0.88);
+}
+
+.knowledge-base-badge.mock {
+  color: #6f3d00;
+  background: rgba(255, 235, 204, 0.88);
+}
+
+.knowledge-base-badge.unknown,
+.knowledge-base-badge.muted {
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.62);
 }
 
 .overview-stat-grid {
@@ -1044,6 +1163,13 @@ a {
   border: 1px solid rgba(186, 26, 26, 0.22);
 }
 
+.inline-feedback {
+  margin: 12px 0 0;
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 800;
+}
+
 .debug-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 300px;
@@ -1060,6 +1186,109 @@ a {
   border-radius: 999px;
   background: rgba(239, 244, 255, 0.88);
   border: 1px solid rgba(199, 196, 216, 0.52);
+}
+
+.debug-form-section {
+  margin-top: 26px;
+}
+
+.debug-section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 16px;
+}
+
+.debug-add-control {
+  min-width: 260px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px;
+  border-radius: 999px;
+  background: rgba(239, 244, 255, 0.88);
+  border: 1px solid rgba(199, 196, 216, 0.52);
+}
+
+.debug-add-control input {
+  min-width: 0;
+  flex: 1;
+  height: 34px;
+  border: 0;
+  background: transparent;
+  padding: 0 8px;
+  outline: none;
+}
+
+.debug-add-control .ghost-action {
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.debug-state-card {
+  min-height: 150px;
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 16px;
+  align-items: center;
+  margin-top: 20px;
+  padding: 24px;
+  border-radius: 16px;
+  background: rgba(239, 244, 255, 0.72);
+  border: 1px dashed rgba(79, 70, 229, 0.28);
+}
+
+.debug-state-card > .material-symbols-outlined {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #3525cd, #39b8fd);
+}
+
+.debug-state-card h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.debug-json-panel {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(199, 196, 216, 0.55);
+}
+
+.debug-json-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.debug-json-header .ghost-action {
+  min-height: 34px;
+  padding: 0 12px;
+  white-space: nowrap;
+}
+
+.debug-json-panel pre {
+  max-height: 280px;
+  overflow: auto;
+  margin: 0;
+  padding: 14px;
+  border-radius: 14px;
+  color: #1f2937;
+  background: rgba(239, 244, 255, 0.86);
+  border: 1px solid rgba(199, 196, 216, 0.55);
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .result-strip {
@@ -1127,6 +1356,12 @@ a {
 .reference-list-card.active {
   border-color: rgba(53, 37, 205, 0.46);
   box-shadow: 0 14px 34px rgba(53, 37, 205, 0.16);
+}
+
+.reference-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .reference-preview {
@@ -1250,6 +1485,29 @@ a {
   .reference-layout,
   .day-detail-shell {
     grid-template-columns: 1fr;
+  }
+
+  .debug-section-header {
+    flex-direction: column;
+  }
+
+  .debug-add-control {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .debug-json-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .result-strip-card {
+    grid-template-columns: 40px minmax(0, 1fr);
+  }
+
+  .result-strip-card .score-pill {
+    grid-column: 1 / -1;
+    width: fit-content;
   }
 
   .day-selector {

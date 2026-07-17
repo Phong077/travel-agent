@@ -22,7 +22,7 @@
               <span>目的地</span>
               <div class="field-control">
                 <span class="material-symbols-outlined">location_on</span>
-                <input v-model="form.destination" placeholder="四川" />
+                <input v-model="form.destination" placeholder="四川 / 云南 / 新疆" />
               </div>
             </label>
             <label class="field">
@@ -71,6 +71,21 @@
               {{ item }}
             </button>
           </div>
+          <div class="plan-custom-row">
+            <div class="debug-add-control">
+              <input v-model="preferenceInput" placeholder="添加自定义偏好，例如：摄影、温泉" @keydown.enter.prevent="addPreference" />
+              <button class="ghost-action" type="button" @click="addPreference">添加</button>
+            </div>
+          </div>
+          <div v-if="form.preferences.length > 0" class="selected-chip-panel">
+            <p class="section-eyebrow">已选偏好</p>
+            <div class="preference-grid">
+              <button v-for="item in form.preferences" :key="item" type="button" class="chip selected" @click="removeValue(form.preferences, item)">
+                {{ item }}
+                <span class="material-symbols-outlined">close</span>
+              </button>
+            </div>
+          </div>
 
           <h2 class="section-title" style="font-size: 20px; margin-top: 28px">尽量避免</h2>
           <div class="preference-grid">
@@ -84,6 +99,21 @@
             >
               {{ item }}
             </button>
+          </div>
+          <div class="plan-custom-row">
+            <div class="debug-add-control">
+              <input v-model="avoidInput" placeholder="添加避坑项，例如：夜车、排队太久" @keydown.enter.prevent="addAvoid" />
+              <button class="ghost-action" type="button" @click="addAvoid">添加</button>
+            </div>
+          </div>
+          <div v-if="form.avoid.length > 0" class="selected-chip-panel">
+            <p class="section-eyebrow">已选避坑项</p>
+            <div class="preference-grid">
+              <button v-for="item in form.avoid" :key="item" type="button" class="chip danger" @click="removeValue(form.avoid, item)">
+                {{ item }}
+                <span class="material-symbols-outlined">close</span>
+              </button>
+            </div>
           </div>
         </section>
       </div>
@@ -108,6 +138,7 @@
 
       <div class="page-actions" style="grid-column: 1 / -1">
         <RouterLink class="ghost-action" to="/">返回首页</RouterLink>
+        <button class="ghost-action" type="button" @click="resetForm">重置表单</button>
         <button class="primary-action" type="submit" :disabled="tripState.loading">
           <span class="material-symbols-outlined">auto_awesome</span>
           <span>{{ tripState.loading ? '生成中' : '生成 AI 行程' }}</span>
@@ -122,20 +153,27 @@ import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import AppShell from '../components/AppShell.vue'
 import { planTrip } from '../api/travel'
-import { setTripResult, tripState } from '../store/tripStore'
+import { setTripRequest, setTripResult, tripState } from '../store/tripStore'
+import { clonePlanRequest, createDefaultPlanRequest } from '../utils/planRequest'
 
 const router = useRouter()
 
-const form = reactive({ ...tripState.request })
+const form = reactive(clonePlanRequest(tripState.request))
 const preferenceOptions = ['自然风光', '美食探索', '文化艺术', '轻松节奏', '购物', '亲子友好']
 const avoidOptions = ['太早起床', '频繁换酒店', '长途爬山', '排队太久']
 const selectedBudgetStyle = ref('舒适')
 const validationError = ref('')
+const preferenceInput = ref('')
+const avoidInput = ref('')
 const budgetStyles = [
   { name: '经济', price: '¥', description: '控制住宿和交通成本' },
   { name: '舒适', price: '¥¥', description: '兼顾体验与预算' },
   { name: '奢华', price: '¥¥¥', description: '更好的酒店和餐饮' },
 ]
+
+function getDefaultForm() {
+  return createDefaultPlanRequest()
+}
 
 function toggleValue(list: string[], value: string) {
   const index = list.indexOf(value)
@@ -144,6 +182,38 @@ function toggleValue(list: string[], value: string) {
   } else {
     list.push(value)
   }
+}
+
+function addUniqueValue(list: string[], value: string) {
+  const normalizedValue = value.trim()
+  if (normalizedValue && !list.includes(normalizedValue)) {
+    list.push(normalizedValue)
+  }
+}
+
+function addPreference() {
+  addUniqueValue(form.preferences, preferenceInput.value)
+  preferenceInput.value = ''
+}
+
+function addAvoid() {
+  addUniqueValue(form.avoid, avoidInput.value)
+  avoidInput.value = ''
+}
+
+function removeValue(list: string[], value: string) {
+  const index = list.indexOf(value)
+  if (index >= 0) {
+    list.splice(index, 1)
+  }
+}
+
+function resetForm() {
+  validationError.value = ''
+  Object.assign(form, getDefaultForm())
+  selectedBudgetStyle.value = '舒适'
+  preferenceInput.value = ''
+  avoidInput.value = ''
 }
 
 async function submitPlan() {
@@ -157,7 +227,7 @@ async function submitPlan() {
     return
   }
 
-  tripState.request = { ...form }
+  setTripRequest(clonePlanRequest(form))
   tripState.loading = true
   tripState.error = ''
   await router.push('/loading')

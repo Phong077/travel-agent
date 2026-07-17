@@ -91,3 +91,73 @@ export const mockKnowledgeResults: KnowledgeSearchResult[] = mockTripPlan.refere
   content: item.snippet,
   score: item.score,
 }))
+
+export function createMockKnowledgeResults(request: PlanTripRequest): KnowledgeSearchResult[] {
+  const preferenceText = request.preferences.length > 0 ? request.preferences.join('、') : '当地特色'
+  const avoidText = request.avoid.length > 0 ? request.avoid.join('、') : '过度奔波'
+
+  return [
+    {
+      title: `${request.destination}目的地概览`,
+      source: 'mock/fallback-destination.md',
+      content: `前端 mock 检索结果：当前后端知识库接口不可用，临时根据目的地“${request.destination}”生成概览内容，用于保持调试页演示流程完整。`,
+      score: 0,
+    },
+    {
+      title: `${request.destination}偏好匹配`,
+      source: 'mock/fallback-preferences.md',
+      content: `根据本次偏好“${preferenceText}”，mock 结果会提示后端真实可用时应优先检索景点、美食、交通和季节资料。`,
+      score: 0,
+    },
+    {
+      title: `${request.destination}避坑约束`,
+      source: 'mock/fallback-rules.md',
+      content: `根据避坑项“${avoidText}”，mock 结果会提示生成时应控制行程强度，并避免与用户约束冲突。`,
+      score: 0,
+    },
+  ]
+}
+
+const genericDayThemes = ['抵达与城市初印象', '核心景点与本地美食', '自然风光与轻松体验', '文化街区与深度漫游', '返程前的伴手礼']
+
+export function createMockTripPlan(request: PlanTripRequest): TripPlanResponse {
+  const perPersonBudget = Math.round(request.budget / request.travelers)
+  const perPersonDailyBudget = Math.round(perPersonBudget / request.days)
+  const days = Array.from({ length: request.days }, (_, index) => {
+    const day = index + 1
+    const theme = genericDayThemes[index] ?? `第 ${day} 天弹性探索`
+
+    return {
+      day,
+      theme: `${request.destination}${theme}`,
+      morning:
+        day === 1
+          ? `从${request.departureCity}出发前往${request.destination}，抵达后优先入住交通便利区域，保留休整时间。`
+          : `围绕${request.destination}安排一个核心目的地，上午以轻量游览为主，避免行程过早开始。`,
+      afternoon: `结合${request.preferences.join('、') || '当地特色'}安排体验，优先选择交通顺路、节奏稳定的地点。`,
+      evening: `晚间安排本地餐饮和轻松散步，避开${request.avoid.join('、') || '过度奔波'}。`,
+      transportTip: `这是前端 mock 兜底行程。真实交通建议需要后端接口返回，当前建议以公共交通和短距离步行为主。`,
+    }
+  })
+
+  return {
+    destination: request.destination,
+    totalDays: request.days,
+    summary: `这是根据“${request.destination}”生成的前端 mock 兜底行程，用于后端暂不可用时保持页面演示完整。真实行程会由 Spring Boot 后端结合 RAG 知识库生成。`,
+    budgetAnalysis: {
+      perPersonBudget,
+      perPersonDailyBudget,
+      level: perPersonDailyBudget >= 1000 ? '舒适' : perPersonDailyBudget >= 500 ? '适中' : '经济',
+      suggestion: `当前预算约为人均 ${perPersonBudget} 元、每日人均 ${perPersonDailyBudget} 元。真实预算建议以后端 BudgetService 返回为准。`,
+    },
+    days,
+    references: [
+      {
+        title: `${request.destination} mock 引用`,
+        source: 'mock/fallback.md',
+        snippet: '当前后端接口暂不可用，因此前端使用 mock 数据保持演示流程可用。',
+        score: 0,
+      },
+    ],
+  }
+}

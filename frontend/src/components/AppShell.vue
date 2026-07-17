@@ -63,7 +63,7 @@
         </div>
         <nav class="topbar-tabs">
           <RouterLink to="/result">行程</RouterLink>
-          <RouterLink to="/references">发现</RouterLink>
+          <RouterLink to="/references">来源</RouterLink>
         </nav>
         <button class="icon-button" aria-label="通知">
           <span class="material-symbols-outlined">notifications</span>
@@ -74,8 +74,8 @@
         <RouterLink class="primary-action" to="/plan">创建</RouterLink>
       </header>
 
-      <div v-if="apiStatus.usingMock" class="api-status-banner">
-        <span class="material-symbols-outlined">info</span>
+      <div v-if="apiStatus.checked" class="api-status-banner" :class="{ ready: !apiStatus.usingMock }">
+        <span class="material-symbols-outlined">{{ apiStatus.usingMock ? 'info' : 'check_circle' }}</span>
         <span>{{ apiStatus.message }}</span>
       </div>
 
@@ -96,8 +96,8 @@
         <small>知识库</small>
       </RouterLink>
       <RouterLink to="/references">
-        <span class="material-symbols-outlined">settings</span>
-        <small>设置</small>
+        <span class="material-symbols-outlined">hub</span>
+        <small>来源</small>
       </RouterLink>
     </nav>
   </div>
