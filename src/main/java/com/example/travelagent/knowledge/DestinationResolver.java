@@ -24,7 +24,19 @@ public class DestinationResolver {
             Map.entry("大理", "yunnan"),
             Map.entry("丽江", "yunnan"),
             Map.entry("香格里拉", "yunnan"),
-            Map.entry("西双版纳", "yunnan")
+            Map.entry("西双版纳", "yunnan"),
+
+            Map.entry("广东", "guangdong"),
+            Map.entry("广州", "guangdong"),
+            Map.entry("深圳", "guangdong"),
+            Map.entry("珠海", "guangdong"),
+            Map.entry("佛山", "guangdong"),
+            Map.entry("东莞", "guangdong"),
+            Map.entry("惠州", "guangdong"),
+            Map.entry("汕头", "guangdong"),
+            Map.entry("潮汕", "guangdong"),
+            Map.entry("珠三角", "guangdong"),
+            Map.entry("大湾区", "guangdong")
     );
 
     public String resolve(String destination) {

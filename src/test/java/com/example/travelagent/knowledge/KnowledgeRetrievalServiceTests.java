@@ -55,6 +55,26 @@ class KnowledgeRetrievalServiceTests {
     }
 
     @Test
+    void shouldRetrieveGuangdongKnowledgeForShenzhenDestination() {
+        PlanTripRequest request = new PlanTripRequest(
+                "广州",
+                "深圳",
+                2,
+                5,
+                2000,
+                List.of("滨海", "文艺", "美食"),
+                List.of("频繁换酒店")
+        );
+
+        List<KnowledgeSearchResult> results = retrievalService.retrieve(request);
+
+        assertThat(results).isNotEmpty();
+        assertThat(results)
+                .extracting(KnowledgeSearchResult::source)
+                .anyMatch(source -> source.startsWith("guangdong/"));
+    }
+
+    @Test
     void shouldFallbackToCommonKnowledgeForUnknownDestination() {
         PlanTripRequest request = new PlanTripRequest(
                 "重庆",

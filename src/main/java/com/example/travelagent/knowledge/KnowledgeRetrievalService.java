@@ -1,6 +1,9 @@
 package com.example.travelagent.knowledge;
 
 import com.example.travelagent.domain.PlanTripRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -8,9 +11,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+
 @Service
 public class KnowledgeRetrievalService {
     private static final Logger log = LoggerFactory.getLogger(KnowledgeRetrievalService.class);
@@ -20,6 +21,7 @@ public class KnowledgeRetrievalService {
 
     private record WeightedKeyword(String value, int weight) {
     }
+
     private final List<KnowledgeDocument> documents;
     private final KnowledgeVectorIndex vectorIndex;
     private final DestinationResolver destinationResolver;
@@ -100,12 +102,14 @@ public class KnowledgeRetrievalService {
     private boolean isSearchableForDestination(KnowledgeDocument document, String destinationKey) {
         return COMMON_KEY.equals(document.destinationKey()) || document.destinationKey().equals(destinationKey);
     }
+
     private String formatKeywords(List<WeightedKeyword> keywords) {
         return keywords.stream()
                 .map(keyword -> keyword.value() + "(" + keyword.weight() + ")")
                 .reduce((left, right) -> left + ", " + right)
                 .orElse("none");
     }
+
     private KnowledgeSearchResult toSearchResult(
             KnowledgeDocument document,
             List<WeightedKeyword> keywords,
@@ -137,6 +141,7 @@ public class KnowledgeRetrievalService {
         addIfPresent(keywords, request.destination(), 3);
         addAllIfPresent(keywords, request.preferences(), 3);
 
+        // 默认补充通用旅行关键词，避免用户偏好过少时检索条件太窄。
         keywords.add(new WeightedKeyword("交通", 1));
         keywords.add(new WeightedKeyword("美食", 1));
 
@@ -179,5 +184,4 @@ public class KnowledgeRetrievalService {
             values.forEach(value -> addIfPresent(keywords, value, weight));
         }
     }
-
 }
