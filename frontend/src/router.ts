@@ -6,6 +6,7 @@ import ResultOverviewView from './pages/ResultOverviewView.vue'
 import DayDetailView from './pages/DayDetailView.vue'
 import ReferencesView from './pages/ReferencesView.vue'
 import KnowledgeDebugView from './pages/KnowledgeDebugView.vue'
+import HistoryView from './pages/HistoryView.vue'
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -17,5 +18,6 @@ export const router = createRouter({
     { path: '/days', component: DayDetailView },
     { path: '/references', component: ReferencesView },
     { path: '/knowledge', component: KnowledgeDebugView },
+    { path: '/history', component: HistoryView },
   ],
 })

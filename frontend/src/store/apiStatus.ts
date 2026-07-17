@@ -6,10 +6,10 @@ export const apiStatus = reactive({
   message: '',
 })
 
-export function markApiReady() {
+export function markApiReady(message = '已连接后端真实接口，当前数据来自 Spring Boot 服务。') {
   apiStatus.checked = true
   apiStatus.usingMock = false
-  apiStatus.message = '已连接后端真实接口，当前数据来自 Spring Boot 服务。'
+  apiStatus.message = message
 }
 
 export function markApiFallback(message: string) {

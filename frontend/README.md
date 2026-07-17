@@ -22,6 +22,7 @@
 | `/days` | 每日行程详情 |
 | `/references` | RAG 引用来源 |
 | `/knowledge` | 知识库检索调试页 |
+| `/history` | 本地生成历史记录 |
 
 ## 后端接口
 
@@ -35,11 +36,27 @@
 已接入接口：
 
 ```text
+GET  /api/health
 POST /api/trips/plan
+POST /api/agent/trips/plan
 POST /api/knowledge/search
 ```
 
 如果后端未启动，前端会自动使用 mock 数据兜底，并在页面顶部展示提示，方便单独演示前端效果。
+
+### 后端地址配置
+
+默认情况下，开发环境通过 Vite proxy 请求后端：
+
+```text
+/api -> http://localhost:8092
+```
+
+如果前端和后端分开部署，可以复制 `.env.example` 为 `.env`，并配置：
+
+```text
+VITE_API_BASE_URL=http://localhost:8092
+```
 
 ## 本地运行
 
@@ -65,5 +82,9 @@ pnpm build
 - 按 Stitch 原型拆分页面和组件。
 - 支持桌面端侧边栏布局与移动端底部导航。
 - 行程生成流程包含加载态、结果概览、每日详情、预算分析和 RAG 引用展示。
+- 支持稳定服务编排和 Agent Tool Calling 两种生成模式。
+- 结果页展示用户需求、需求处理说明、工具证据、天气提醒和预算分析。
+- 支持复制行程摘要、导出 Markdown 行程文档。
+- 支持本地生成历史，可搜索、筛选、恢复、删除和导出历史计划。
 - 知识库调试页可单独验证 RAG 检索结果。
 - 前端类型与后端 DTO 对齐，方便联调和面试讲解。

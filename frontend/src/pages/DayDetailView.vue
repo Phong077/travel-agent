@@ -83,6 +83,14 @@
               <strong>交通建议：</strong>{{ day.transportTip }}
             </div>
 
+            <div v-if="getWeatherTip(day.day)" class="daily-weather-tip">
+              <span class="material-symbols-outlined">wb_cloudy</span>
+              <div>
+                <strong>当日天气提醒</strong>
+                <p>{{ getWeatherTip(day.day) }}</p>
+              </div>
+            </div>
+
             <div class="day-actions">
               <button class="ghost-action" type="button" @click="copyDay(day.day)">复制当天安排</button>
               <RouterLink class="primary-action" to="/references">查看引用来源</RouterLink>
@@ -118,6 +126,10 @@ function getDayDistance(day: number) {
   return distances[day - 1] ?? '轻松路线'
 }
 
+function getWeatherTip(day: number) {
+  return result.value.weatherInfo?.dailyTips?.[day - 1] ?? ''
+}
+
 async function copyDay(dayNumber: number) {
   const day = result.value.days.find((item) => item.day === dayNumber)
   if (!day) {
@@ -126,7 +138,7 @@ async function copyDay(dayNumber: number) {
 
   copyMessageByDay[dayNumber] = ''
   try {
-    await copyTextToClipboard(formatItineraryDay(result.value.destination, day))
+    await copyTextToClipboard(formatItineraryDay(result.value.destination, day, getWeatherTip(dayNumber)))
     copyMessageByDay[dayNumber] = '已复制当天安排'
   } catch {
     copyMessageByDay[dayNumber] = '复制失败，请稍后重试'

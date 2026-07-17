@@ -1,0 +1,13 @@
+.git
+.idea
+.vscode
+target
+frontend/node_modules
+frontend/dist
+frontend/*.log
+frontend/*.tsbuildinfo
+stitch-export
+docs
+README.md
+HELP.md
+PRD.md

@@ -19,6 +19,9 @@
 
     <section class="content-grid">
       <div>
+        <RequestSummaryCard :request="request" />
+        <ConstraintInsightCard :request="request" :result="result" />
+
         <article class="panel">
           <p class="section-eyebrow">行程总结</p>
           <h2 class="section-title" style="font-size: 22px">基于知识库与预算生成</h2>
@@ -58,7 +61,27 @@
       </div>
 
       <aside class="panel">
+        <article class="generation-summary-card">
+          <p class="section-eyebrow">生成模式</p>
+          <h3>{{ generationModeLabel }}</h3>
+          <p class="section-copy">{{ generationModeDescription }}</p>
+          <div v-if="generationMetadata" class="generation-meta-row">
+            <span>{{ generationMetadata.validated ? '已通过校验' : '未校验' }}</span>
+            <span>尝试 {{ generationMetadata.attempts }} 次</span>
+            <span>{{ generationMetadata.mode }}</span>
+          </div>
+        </article>
+
+        <ToolEvidencePanel :mode="tripState.generationMode" :request="request" :result="result" />
+
         <KnowledgeBaseSummary :references="result.references" />
+
+        <article v-if="result.weatherInfo" class="weather-card">
+          <p class="section-eyebrow">天气提醒</p>
+          <h3>{{ result.weatherInfo.riskLevel }}</h3>
+          <p class="section-copy">{{ result.weatherInfo.summary }}</p>
+          <p class="section-copy" style="margin-top: 10px">{{ result.weatherInfo.suggestion }}</p>
+        </article>
 
         <p class="section-eyebrow">预算概览</p>
         <div class="budget-bars">
@@ -82,6 +105,7 @@
         <RouterLink class="primary-action" to="/days" style="margin-top: 20px; width: 100%">查看行程</RouterLink>
         <RouterLink class="ghost-action" to="/references" style="margin-top: 12px; width: 100%">查看引用来源</RouterLink>
         <button class="ghost-action" type="button" style="margin-top: 12px; width: 100%" @click="copySummary">复制行程摘要</button>
+        <button class="ghost-action" type="button" style="margin-top: 12px; width: 100%" @click="exportMarkdown">导出 Markdown</button>
         <button class="ghost-action" type="button" style="margin-top: 12px; width: 100%" @click="restartPlan">清空并重新规划</button>
         <p v-if="copyMessage" class="inline-feedback">{{ copyMessage }}</p>
       </aside>
@@ -94,16 +118,27 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AppShell from '../components/AppShell.vue'
+import ConstraintInsightCard from '../components/ConstraintInsightCard.vue'
 import EmptyTripState from '../components/EmptyTripState.vue'
 import KnowledgeBaseSummary from '../components/KnowledgeBaseSummary.vue'
+import RequestSummaryCard from '../components/RequestSummaryCard.vue'
+import ToolEvidencePanel from '../components/ToolEvidencePanel.vue'
 import { resetTripSession, tripState } from '../store/tripStore'
 import { copyTextToClipboard } from '../utils/clipboard'
-import { formatTripPlanSummary } from '../utils/tripFormatter'
+import { downloadTextFile } from '../utils/download'
+import { createTripPlanMarkdownFilename, formatTripPlanMarkdown, formatTripPlanSummary } from '../utils/tripFormatter'
 
 const router = useRouter()
 const hasResult = computed(() => tripState.hasResult)
 const result = computed(() => tripState.result)
 const request = computed(() => tripState.request)
+const generationMetadata = computed(() => result.value.generationMetadata)
+const generationModeLabel = computed(() => (tripState.generationMode === 'agent' ? 'Agent Tool Calling' : '稳定服务编排'))
+const generationModeDescription = computed(() =>
+  tripState.generationMode === 'agent'
+    ? '大模型通过工具调用预算、天气和知识库能力后生成行程。'
+    : '后端按固定顺序编排知识库、预算、天气和大模型生成流程。'
+)
 const copyMessage = ref('')
 const perPersonBudgetWidth = computed(() => getProgressWidth(result.value.budgetAnalysis?.perPersonBudget ?? 0, 6000))
 const dailyBudgetWidth = computed(() => getProgressWidth(result.value.budgetAnalysis?.perPersonDailyBudget ?? 0, 1500))
@@ -139,6 +174,14 @@ async function copySummary() {
   } catch {
     copyMessage.value = '复制失败，请稍后重试'
   }
+}
+
+function exportMarkdown() {
+  downloadTextFile(
+    createTripPlanMarkdownFilename(result.value.destination),
+    formatTripPlanMarkdown(result.value, request.value),
+    'text/markdown;charset=utf-8',
+  )
 }
 
 async function restartPlan() {

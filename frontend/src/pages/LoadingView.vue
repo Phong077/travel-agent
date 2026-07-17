@@ -19,6 +19,7 @@
         <p class="section-eyebrow">{{ activeStep.label }}</p>
         <h1 class="section-title">正在{{ activeStep.title }}...</h1>
         <p class="section-copy">{{ activeStep.description }}</p>
+        <span class="loading-mode-pill">当前模式：{{ generationModeLabel }}</span>
       </div>
 
       <div class="loading-steps">
@@ -36,6 +37,7 @@ import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { tripState } from '../store/tripStore'
 
 const destinationName = computed(() => tripState.request.destination || '目的地')
+const generationModeLabel = computed(() => (tripState.generationMode === 'agent' ? 'Agent Tool Calling' : '稳定服务编排'))
 
 const steps = computed(() => [
   {

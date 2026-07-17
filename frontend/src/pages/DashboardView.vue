@@ -67,6 +67,32 @@
             <div class="bar"><span :style="{ width: `${readiness}%` }"></span></div>
           </div>
         </section>
+
+        <section class="panel history-insight-panel">
+          <div class="history-insight-header">
+            <div>
+              <p class="section-eyebrow">历史洞察</p>
+              <h3>{{ historyInsightTitle }}</h3>
+            </div>
+            <RouterLink class="ghost-action" to="/history">查看</RouterLink>
+          </div>
+          <div class="history-insight-grid">
+            <div>
+              <span>总计划</span>
+              <strong>{{ historyCount }}</strong>
+            </div>
+            <div>
+              <span>Agent 版</span>
+              <strong>{{ agentHistoryCount }}</strong>
+            </div>
+            <div>
+              <span>稳定版</span>
+              <strong>{{ stableHistoryCount }}</strong>
+            </div>
+          </div>
+          <p class="section-copy">{{ historyInsightCopy }}</p>
+        </section>
+
         <section class="panel">
           <p class="section-eyebrow">最近事项</p>
           <div class="mini-list">
@@ -80,6 +106,10 @@
             </RouterLink>
             <RouterLink class="mini-row" to="/days">
               <span>每日行程详情</span>
+              <span class="material-symbols-outlined">arrow_forward</span>
+            </RouterLink>
+            <RouterLink class="mini-row" to="/history">
+              <span>生成历史记录</span>
               <span class="material-symbols-outlined">arrow_forward</span>
             </RouterLink>
           </div>
@@ -97,6 +127,10 @@ import { tripState } from '../store/tripStore'
 const hasResult = computed(() => tripState.hasResult)
 const result = computed(() => tripState.result)
 const request = computed(() => tripState.request)
+const historyCount = computed(() => tripState.history.length)
+const agentHistoryCount = computed(() => tripState.history.filter((item) => item.generationMode === 'agent').length)
+const stableHistoryCount = computed(() => tripState.history.filter((item) => item.generationMode === 'stable').length)
+const latestHistoryItem = computed(() => tripState.history[0])
 const referenceCount = computed(() => (hasResult.value ? result.value.references.length : 0))
 const preferenceMatch = computed(() => Math.min(96, 60 + request.value.preferences.length * 8))
 const knowledgeHitRate = computed(() => (hasResult.value ? Math.min(96, 38 + referenceCount.value * 12) : 0))
@@ -110,6 +144,12 @@ const summaryCopy = computed(() =>
 )
 const previewTitle = computed(() => (hasResult.value ? `${result.value.destination}旅行计划` : '下一次旅行计划'))
 const previewMeta = computed(() => `${request.value.days} 天 · ${request.value.travelers} 人 · 预算 ${request.value.budget}`)
+const historyInsightTitle = computed(() => (historyCount.value > 0 ? '已沉淀旅行方案' : '暂无历史记录'))
+const historyInsightCopy = computed(() =>
+  latestHistoryItem.value
+    ? `最近一次生成：${latestHistoryItem.value.result.destination} · ${latestHistoryItem.value.result.totalDays} 天，使用${latestHistoryItem.value.generationMode === 'agent' ? 'Agent Tool Calling' : '稳定服务编排'}。`
+    : '生成行程后，系统会自动保存本地历史，方便恢复、筛选和导出。',
+)
 const showcaseRows = computed(() => {
   if (!hasResult.value) {
     return [

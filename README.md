@@ -13,6 +13,7 @@
 - 统一响应与异常处理：成功和失败响应格式统一，便于前端处理。
 - 调试日志：输出检索关键词、命中知识、预算分析和 AI 原始返回。
 - 前端控制台：提供行程生成、知识库调试、引用来源、每日详情和结果复制等完整演示流程。
+- Agent Tool Calling：新增 Agent 版规划接口，由模型调用预算、天气和知识库工具辅助生成。
 
 ## 技术栈
 
@@ -135,6 +136,20 @@ http://localhost:5173
 /api -> http://localhost:8092
 ```
 
+如果前端和后端分开部署，可以在 `frontend/.env` 中配置：
+
+```text
+VITE_API_BASE_URL=http://localhost:8092
+```
+
+后端默认允许本地前端跨域访问：
+
+```properties
+app.cors.allowed-origins=http://localhost:5173,http://127.0.0.1:5173
+```
+
+部署到线上时，将该配置改为实际前端域名即可。
+
 如果后端未启动，前端会自动使用 mock 数据兜底，并在页面顶部提示当前为演示数据。
 
 常用命令：
@@ -145,16 +160,64 @@ pnpm build
 pnpm preview
 ```
 
+## 本地验收
+
+提交代码或演示项目前，可以运行本地验收脚本：
+
+```powershell
+.\scripts\verify-local.cmd
+```
+
+该脚本会依次执行：
+
+```text
+后端测试：.\mvnw.cmd test
+前端构建：pnpm.cmd build
+```
+
+两个步骤都通过，说明当前代码至少满足“后端测试通过、前端可生产构建”的基础交付标准。
+
+## Docker 运行方式
+
+如果本机安装了 Docker，可以通过 docker compose 同时启动后端和前端。
+
+先在终端配置阿里百炼 Key：
+
+```powershell
+$env:DASHSCOPE_API_KEY="你的阿里百炼Key"
+```
+
+启动：
+
+```bash
+docker compose up --build
+```
+
+访问：
+
+```text
+前端：http://localhost:5173
+后端：http://localhost:8092
+健康检查：http://localhost:8092/api/health
+```
+
+说明：
+
+- Key 通过环境变量传入容器，不写入镜像。
+- 前端容器使用 Nginx 托管静态资源。
+- Nginx 会把 `/api` 代理到后端容器。
+
 ## 前端页面
 
 ```text
 /             控制台首页，动态展示最近一次行程状态
 /plan         旅行规划输入表单，支持自定义偏好和避坑项
 /loading      生成中状态，展示预算分析、知识库检索、行程生成过程
-/result       旅行计划概览，展示摘要、预算分析、知识库来源和复制摘要
+/result       旅行计划概览，展示摘要、预算分析、知识库来源、工具证据和导出能力
 /days         每日行程详情，支持复制单日安排
 /references   RAG 引用来源，展示引用片段、匹配分数和知识库标签
 /knowledge    知识库检索调试台，展示请求 JSON、响应 JSON 和命中文档
+/history      本地生成历史，支持搜索、筛选、恢复、删除和导出
 ```
 
 前端已实现的工程化处理：
@@ -164,9 +227,10 @@ pnpm preview
 - 真实接口 / Mock 兜底状态提示：后端可用时显示真实接口连接状态，后端不可用时展示 mock 原因。
 - 动态 Mock：后端不可用时，mock 行程和 mock 检索结果会根据用户输入的目的地、天数、预算、偏好动态生成。
 - 本地缓存：使用 `sessionStorage` 保存最近一次请求和结果，刷新后仍可查看。
+- 本地历史：使用 `localStorage` 保存最近生成记录，支持恢复、筛选和导出 Markdown。
 - 缓存容错：请求参数和行程结果会做结构标准化，避免坏缓存导致页面异常。
 - 空状态：未生成行程时，结果页、每日详情页和引用页会引导用户先新建行程。
-- 复制能力：支持复制完整行程摘要、单日行程、单条引用、知识库请求 JSON 和响应 JSON。
+- 复制与导出：支持复制完整行程摘要、单日行程、单条引用、知识库请求 JSON、响应 JSON，并导出 Markdown 行程文档。
 
 ## 前端演示流程
 
@@ -178,6 +242,7 @@ pnpm preview
 6. 在 `/days` 查看每日安排，并复制单日行程。
 7. 在 `/references` 查看 RAG 引用来源和知识库标签。
 8. 在 `/knowledge` 调试检索链路，展示请求体 JSON、响应体 JSON 和命中文档。
+9. 在 `/history` 查看历史记录，按关键词或生成模式筛选，并恢复或导出历史行程。
 
 ## 接口示例
 
@@ -249,6 +314,28 @@ Content-Type: application/json
 
 该接口只返回 RAG 检索命中的知识片段，不调用大模型，主要用于调试检索效果。
 
+### 健康检查
+
+```http
+GET http://localhost:8092/api/health
+```
+
+用于确认后端服务是否正常启动，前后端分开部署时也可用于快速排查联通性。
+
+### Agent Tool Calling 版旅行计划
+
+```http
+POST http://localhost:8092/api/agent/trips/plan
+Content-Type: application/json
+```
+
+该接口会把预算分析、天气分析和知识库检索能力注册为工具，由大模型根据任务调用工具后再生成最终行程。前端 `/plan` 页面可以在“生成模式”中选择：
+
+```text
+稳定版：后端服务编排，固定调用知识库、预算和天气服务
+Agent 版：Tool Calling，大模型通过工具调用获取预算、天气和知识库结果
+```
+
 ## RAG 流程
 
 ```text
@@ -301,7 +388,6 @@ src/main/resources/knowledge/
 
 ## 后续规划
 
-- 增加天气、路线和景点推荐工具服务。
-- 增加 Spring AI Alibaba Tool Calling / ReactAgent 版本接口。
+- 接入真实天气、路线和景点数据源，替换当前演示级规则服务。
 - 将轻量级关键词 RAG 升级为 DashScope Embedding + 向量检索。
 - 增加前端 E2E 测试和部署配置。

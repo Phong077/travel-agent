@@ -31,6 +31,33 @@ export interface BudgetAnalysis {
   suggestion: string
 }
 
+export interface WeatherInfo {
+  destination: string
+  summary: string
+  riskLevel: string
+  suggestion: string
+  dailyTips: string[]
+}
+
+export interface ToolCallRecord {
+  name: string
+  displayName: string
+  status: string
+  detail: string
+}
+
+export interface HealthStatus {
+  application: string
+  status: string
+  timestamp: string
+}
+
+export interface GenerationMetadata {
+  mode: string
+  attempts: number
+  validated: boolean
+}
+
 export interface TripPlanResponse {
   destination: string
   totalDays: number
@@ -38,6 +65,9 @@ export interface TripPlanResponse {
   days: ItineraryDay[]
   references: KnowledgeReference[]
   budgetAnalysis?: BudgetAnalysis
+  weatherInfo?: WeatherInfo
+  toolCalls?: ToolCallRecord[]
+  generationMetadata?: GenerationMetadata
 }
 
 export interface ApiResponse<T> {

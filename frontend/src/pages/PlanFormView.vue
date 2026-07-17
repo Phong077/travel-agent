@@ -119,6 +119,22 @@
       </div>
 
       <aside class="panel">
+        <p class="section-eyebrow">生成模式</p>
+        <div class="generation-mode-group">
+          <button
+            v-for="mode in generationModes"
+            :key="mode.value"
+            type="button"
+            class="generation-mode-card"
+            :class="{ active: selectedGenerationMode === mode.value }"
+            @click="selectedGenerationMode = mode.value"
+          >
+            <span>{{ mode.name }}</span>
+            <strong>{{ mode.title }}</strong>
+            <small>{{ mode.description }}</small>
+          </button>
+        </div>
+
         <p class="section-eyebrow">预算风格</p>
         <div class="mini-list">
           <button
@@ -152,8 +168,8 @@
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import AppShell from '../components/AppShell.vue'
-import { planTrip } from '../api/travel'
-import { setTripRequest, setTripResult, tripState } from '../store/tripStore'
+import { planTrip, planTripWithAgent } from '../api/travel'
+import { setGenerationMode, setTripRequest, setTripResult, tripState, type GenerationMode } from '../store/tripStore'
 import { clonePlanRequest, createDefaultPlanRequest } from '../utils/planRequest'
 
 const router = useRouter()
@@ -162,6 +178,7 @@ const form = reactive(clonePlanRequest(tripState.request))
 const preferenceOptions = ['自然风光', '美食探索', '文化艺术', '轻松节奏', '购物', '亲子友好']
 const avoidOptions = ['太早起床', '频繁换酒店', '长途爬山', '排队太久']
 const selectedBudgetStyle = ref('舒适')
+const selectedGenerationMode = ref<GenerationMode>(tripState.generationMode)
 const validationError = ref('')
 const preferenceInput = ref('')
 const avoidInput = ref('')
@@ -169,6 +186,25 @@ const budgetStyles = [
   { name: '经济', price: '¥', description: '控制住宿和交通成本' },
   { name: '舒适', price: '¥¥', description: '兼顾体验与预算' },
   { name: '奢华', price: '¥¥¥', description: '更好的酒店和餐饮' },
+]
+const generationModes: Array<{
+  value: GenerationMode
+  name: string
+  title: string
+  description: string
+}> = [
+  {
+    value: 'stable',
+    name: '稳定版',
+    title: '服务编排',
+    description: '后端固定调用知识库、预算和天气服务，更稳定可控。',
+  },
+  {
+    value: 'agent',
+    name: 'Agent 版',
+    title: 'Tool Calling',
+    description: '大模型通过工具调用预算、天气和知识库能力。',
+  },
 ]
 
 function getDefaultForm() {
@@ -212,6 +248,8 @@ function resetForm() {
   validationError.value = ''
   Object.assign(form, getDefaultForm())
   selectedBudgetStyle.value = '舒适'
+  selectedGenerationMode.value = 'stable'
+  setGenerationMode('stable')
   preferenceInput.value = ''
   avoidInput.value = ''
 }
@@ -228,12 +266,13 @@ async function submitPlan() {
   }
 
   setTripRequest(clonePlanRequest(form))
+  setGenerationMode(selectedGenerationMode.value)
   tripState.loading = true
   tripState.error = ''
   await router.push('/loading')
 
   try {
-    const result = await planTrip(tripState.request)
+    const result = selectedGenerationMode.value === 'agent' ? await planTripWithAgent(tripState.request) : await planTrip(tripState.request)
     setTripResult(result)
     await router.push('/result')
   } catch (error) {

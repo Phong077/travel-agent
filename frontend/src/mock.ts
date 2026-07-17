@@ -21,6 +21,44 @@ export const mockTripPlan: TripPlanResponse = {
     level: '适中',
     suggestion: '预算适合普通舒适型旅行，建议住宿选择交通便利区域，把更多预算留给餐饮和核心景区体验。',
   },
+  weatherInfo: {
+    destination: '四川',
+    summary: '当前为规则版天气分析，四川行程需要关注多云阵雨和山区温差。',
+    riskLevel: '多云阵雨',
+    suggestion: '建议准备雨具和轻便外套，山区或早晚时段注意保暖，并为户外行程预留室内备选。',
+    dailyTips: [
+      '第 1 天关注多云阵雨，城市漫步可准备雨具。',
+      '第 2 天关注山区温差，建议携带外套。',
+      '第 3 天关注短时阵雨，户外行程预留弹性。',
+      '第 4 天关注山地天气变化，控制徒步强度。',
+      '第 5 天返程前留足交通缓冲。',
+    ],
+  },
+  toolCalls: [
+    {
+      name: 'knowledgeRetrievalService.retrieve',
+      displayName: '知识库检索服务',
+      status: '已执行',
+      detail: '命中 3 条引用，最高相关度 3',
+    },
+    {
+      name: 'budgetService.analyze',
+      displayName: '预算分析服务',
+      status: '已执行',
+      detail: '人均预算 3000 元，每日人均 600 元，预算等级：适中',
+    },
+    {
+      name: 'weatherService.analyze',
+      displayName: '天气风险服务',
+      status: '已执行',
+      detail: '多云阵雨：建议准备雨具和轻便外套，山区或早晚时段注意保暖，并为户外行程预留室内备选。',
+    },
+  ],
+  generationMetadata: {
+    mode: 'stable',
+    attempts: 1,
+    validated: true,
+  },
   days: [
     {
       day: 1,
@@ -149,6 +187,32 @@ export function createMockTripPlan(request: PlanTripRequest): TripPlanResponse {
       perPersonDailyBudget,
       level: perPersonDailyBudget >= 1000 ? '舒适' : perPersonDailyBudget >= 500 ? '适中' : '经济',
       suggestion: `当前预算约为人均 ${perPersonBudget} 元、每日人均 ${perPersonDailyBudget} 元。真实预算建议以后端 BudgetService 返回为准。`,
+    },
+    weatherInfo: {
+      destination: request.destination,
+      summary: `这是根据“${request.destination}”生成的前端 mock 天气提醒，用于后端暂不可用时保持页面演示完整。`,
+      riskLevel: '规则兜底',
+      suggestion: '建议出发前查看实时天气，并为户外行程准备雨具、防晒或保暖衣物。',
+      dailyTips: days.map((day) => `第 ${day.day} 天建议根据实时天气调整户外活动和交通时间。`),
+    },
+    toolCalls: [
+      {
+        name: 'frontend.mock.knowledge',
+        displayName: '前端兜底知识库',
+        status: 'Mock',
+        detail: '后端接口不可用时，由前端 mock 数据保持演示链路完整。',
+      },
+      {
+        name: 'frontend.mock.budget',
+        displayName: '前端兜底预算',
+        status: 'Mock',
+        detail: `人均预算 ${perPersonBudget} 元，每日人均 ${perPersonDailyBudget} 元。`,
+      },
+    ],
+    generationMetadata: {
+      mode: 'mock',
+      attempts: 1,
+      validated: true,
     },
     days,
     references: [

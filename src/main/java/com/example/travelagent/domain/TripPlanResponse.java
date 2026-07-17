@@ -8,6 +8,9 @@ public record TripPlanResponse(
         String summary,
         List<ItineraryDay> days,
         List<KnowledgeReference> references,
-        BudgetAnalysis budgetAnalysis
+        BudgetAnalysis budgetAnalysis,
+        WeatherInfo weatherInfo,
+        List<ToolCallRecord> toolCalls,
+        GenerationMetadata generationMetadata
 ) {
 }

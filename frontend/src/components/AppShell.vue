@@ -28,6 +28,10 @@
           <span class="material-symbols-outlined">hub</span>
           <span>来源</span>
         </RouterLink>
+        <RouterLink class="nav-item" to="/history">
+          <span class="material-symbols-outlined">history</span>
+          <span>历史</span>
+        </RouterLink>
       </nav>
 
       <div class="sidebar-footer">
@@ -64,6 +68,7 @@
         <nav class="topbar-tabs">
           <RouterLink to="/result">行程</RouterLink>
           <RouterLink to="/references">来源</RouterLink>
+          <RouterLink to="/history">历史</RouterLink>
         </nav>
         <button class="icon-button" aria-label="通知">
           <span class="material-symbols-outlined">notifications</span>
@@ -77,6 +82,9 @@
       <div v-if="apiStatus.checked" class="api-status-banner" :class="{ ready: !apiStatus.usingMock }">
         <span class="material-symbols-outlined">{{ apiStatus.usingMock ? 'info' : 'check_circle' }}</span>
         <span>{{ apiStatus.message }}</span>
+        <button class="api-status-action" type="button" :disabled="checkingHealth" @click="refreshBackendHealth">
+          {{ checkingHealth ? '检测中' : '重新检测' }}
+        </button>
       </div>
 
       <slot />
@@ -99,10 +107,37 @@
         <span class="material-symbols-outlined">hub</span>
         <small>来源</small>
       </RouterLink>
+      <RouterLink to="/history">
+        <span class="material-symbols-outlined">history</span>
+        <small>历史</small>
+      </RouterLink>
     </nav>
   </div>
 </template>
 
 <script setup lang="ts">
+import { onMounted, ref } from 'vue'
+import { checkBackendHealth } from '../api/travel'
 import { apiStatus } from '../store/apiStatus'
+
+const checkingHealth = ref(false)
+
+onMounted(() => {
+  if (!apiStatus.checked) {
+    void refreshBackendHealth()
+  }
+})
+
+async function refreshBackendHealth() {
+  if (checkingHealth.value) {
+    return
+  }
+
+  checkingHealth.value = true
+  try {
+    await checkBackendHealth()
+  } finally {
+    checkingHealth.value = false
+  }
+}
 </script>

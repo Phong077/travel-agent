@@ -1,9 +1,12 @@
 package com.example.travelagent.application;
 
 import com.example.travelagent.domain.BudgetAnalysis;
+import com.example.travelagent.domain.GenerationMetadata;
 import com.example.travelagent.domain.KnowledgeReference;
 import com.example.travelagent.domain.PlanTripRequest;
+import com.example.travelagent.domain.ToolCallRecord;
 import com.example.travelagent.domain.TripPlanResponse;
+import com.example.travelagent.domain.WeatherInfo;
 import com.example.travelagent.knowledge.DestinationResolver;
 import com.example.travelagent.knowledge.KnowledgeRetrievalService;
 import com.example.travelagent.knowledge.KnowledgeSearchResult;
@@ -20,30 +23,38 @@ import java.util.List;
 public class TravelPlanningService {
 
     private static final Logger log = LoggerFactory.getLogger(TravelPlanningService.class);
+    private static final int MAX_AI_ATTEMPTS = 2;
 
     private final ChatClient chatClient;
     private final ObjectMapper objectMapper;
     private final KnowledgeRetrievalService knowledgeRetrievalService;
     private final BudgetService budgetService;
     private final DestinationResolver destinationResolver;
+    private final WeatherService weatherService;
+    private final TripPlanResponseValidator tripPlanResponseValidator;
 
     public TravelPlanningService(
             ChatClient.Builder chatClientBuilder,
             ObjectMapper objectMapper,
             KnowledgeRetrievalService knowledgeRetrievalService,
             BudgetService budgetService,
-            DestinationResolver destinationResolver
+            DestinationResolver destinationResolver,
+            WeatherService weatherService,
+            TripPlanResponseValidator tripPlanResponseValidator
     ) {
         this.chatClient = chatClientBuilder.build();
         this.objectMapper = objectMapper;
         this.knowledgeRetrievalService = knowledgeRetrievalService;
         this.budgetService = budgetService;
         this.destinationResolver = destinationResolver;
+        this.weatherService = weatherService;
+        this.tripPlanResponseValidator = tripPlanResponseValidator;
     }
 
     public TripPlanResponse plan(PlanTripRequest request) {
         List<KnowledgeSearchResult> references = knowledgeRetrievalService.retrieve(request);
         BudgetAnalysis budgetAnalysis = budgetService.analyze(request);
+        WeatherInfo weatherInfo = weatherService.analyze(request);
         String destinationKey = destinationResolver.resolve(request.destination());
         boolean hasDedicatedKnowledgeBase = destinationResolver.hasDedicatedKnowledgeBase(destinationKey);
 
@@ -62,32 +73,105 @@ public class TravelPlanningService {
                 budgetAnalysis.level(),
                 budgetAnalysis.perPersonDailyBudget()
         );
+        log.info(
+                "Weather analysis: riskLevel={}, suggestion={}",
+                weatherInfo.riskLevel(),
+                weatherInfo.suggestion()
+        );
+        List<ToolCallRecord> toolCalls = buildServiceToolCalls(references, budgetAnalysis, weatherInfo);
 
-        String prompt = buildPrompt(request, references, budgetAnalysis, hasDedicatedKnowledgeBase);
+        String prompt = buildPrompt(request, references, budgetAnalysis, weatherInfo, hasDedicatedKnowledgeBase);
 
-        String json = chatClient.prompt()
-                .user(prompt)
-                .call()
-                .content();
+        GenerationResult generationResult = generateValidatedTripPlan(prompt, request);
+        return enrichResponse(generationResult, references, budgetAnalysis, weatherInfo, toolCalls);
+    }
 
-        log.debug("Raw AI response: {}", json);
+    private GenerationResult generateValidatedTripPlan(String prompt, PlanTripRequest request) {
+        String currentPrompt = prompt;
+        AiResponseParseException lastException = null;
 
-        TripPlanResponse response = parseTripPlan(json);
-        return enrichResponse(response, references, budgetAnalysis);
+        for (int attempt = 1; attempt <= MAX_AI_ATTEMPTS; attempt++) {
+            String json = chatClient.prompt()
+                    .user(currentPrompt)
+                    .call()
+                    .content();
+
+            log.debug("Raw AI response, attempt={}: {}", attempt, json);
+
+            try {
+                TripPlanResponse response = parseTripPlan(json);
+                tripPlanResponseValidator.validate(response, request);
+                return new GenerationResult(response, attempt);
+            } catch (AiResponseParseException exception) {
+                lastException = exception;
+                log.warn(
+                        "AI response validation failed, attempt={}/{}, reason={}",
+                        attempt,
+                        MAX_AI_ATTEMPTS,
+                        exception.getMessage()
+                );
+                currentPrompt = buildRetryPrompt(prompt, exception.getMessage());
+            }
+        }
+
+        throw lastException;
     }
 
     private TripPlanResponse enrichResponse(
-            TripPlanResponse response,
+            GenerationResult generationResult,
             List<KnowledgeSearchResult> references,
-            BudgetAnalysis budgetAnalysis
+            BudgetAnalysis budgetAnalysis,
+            WeatherInfo weatherInfo,
+            List<ToolCallRecord> toolCalls
     ) {
+        TripPlanResponse response = generationResult.response();
+
         return new TripPlanResponse(
                 response.destination(),
                 response.totalDays(),
                 response.summary(),
                 response.days(),
                 toKnowledgeReferences(references),
-                budgetAnalysis
+                budgetAnalysis,
+                weatherInfo,
+                toolCalls,
+                new GenerationMetadata("stable", generationResult.attempts(), true)
+        );
+    }
+
+    private List<ToolCallRecord> buildServiceToolCalls(
+            List<KnowledgeSearchResult> references,
+            BudgetAnalysis budgetAnalysis,
+            WeatherInfo weatherInfo
+    ) {
+        int bestScore = references.stream()
+                .mapToInt(KnowledgeSearchResult::score)
+                .max()
+                .orElse(0);
+
+        return List.of(
+                new ToolCallRecord(
+                        "knowledgeRetrievalService.retrieve",
+                        "知识库检索服务",
+                        "已执行",
+                        "命中 %d 条引用，最高相关度 %d".formatted(references.size(), bestScore)
+                ),
+                new ToolCallRecord(
+                        "budgetService.analyze",
+                        "预算分析服务",
+                        "已执行",
+                        "人均预算 %d 元，每日人均 %d 元，预算等级：%s".formatted(
+                                budgetAnalysis.perPersonBudget(),
+                                budgetAnalysis.perPersonDailyBudget(),
+                                budgetAnalysis.level()
+                        )
+                ),
+                new ToolCallRecord(
+                        "weatherService.analyze",
+                        "天气风险服务",
+                        "已执行",
+                        "%s：%s".formatted(weatherInfo.riskLevel(), weatherInfo.suggestion())
+                )
         );
     }
 
@@ -95,6 +179,7 @@ public class TravelPlanningService {
             PlanTripRequest request,
             List<KnowledgeSearchResult> references,
             BudgetAnalysis budgetAnalysis,
+            WeatherInfo weatherInfo,
             boolean hasDedicatedKnowledgeBase
     ) {
         return """
@@ -125,8 +210,14 @@ public class TravelPlanningService {
                 预算等级：%s
                 预算建议：%s
 
+                天气分析：
+                天气摘要：%s
+                风险等级：%s
+                天气建议：%s
+
                 如果避免项中提到“不早起”或“太早起床”，不要安排早于 8:30 的出发时间。
                 如果避免项中提到“每天换酒店”或“频繁换酒店”，应尽量减少换酒店次数，优先选择交通便利的城市或区域作为基地。
+                如果天气分析提示阵雨、强日照、高海拔或昼夜温差，需要在每日安排中加入室内备选、雨具、防晒或保暖提醒。
 
                 规划要求：
                 1. 必须围绕用户填写的目的地进行规划，不要擅自改成其他省份或城市。
@@ -136,12 +227,12 @@ public class TravelPlanningService {
                 5. 适当加入美食建议和交通建议。
                 6. days 数组长度必须等于用户填写的旅行天数。
                 7. summary、theme、morning、afternoon、evening、transportTip 都必须使用中文。
-                8. JSON 中不要包含 references 和 budgetAnalysis 字段，这两个字段由后端补充。
+                8. JSON 中不要包含 references、budgetAnalysis、weatherInfo 和 toolCalls 字段，这些字段由后端补充。
 
                 JSON 格式必须严格如下：
                 {
                   "destination": "%s",
-                  "totalDays": 5,
+                  "totalDays": %d,
                   "summary": "这里填写整段行程的中文概述",
                   "days": [
                     {
@@ -174,7 +265,11 @@ public class TravelPlanningService {
                 budgetAnalysis.perPersonDailyBudget(),
                 budgetAnalysis.level(),
                 budgetAnalysis.suggestion(),
+                weatherInfo.summary(),
+                weatherInfo.riskLevel(),
+                weatherInfo.suggestion(),
                 request.destination(),
+                request.days(),
                 request.departureCity(),
                 request.destination(),
                 request.days(),
@@ -183,6 +278,20 @@ public class TravelPlanningService {
                 formatList(request.preferences()),
                 formatList(request.avoid())
         );
+    }
+
+    private String buildRetryPrompt(String originalPrompt, String failureReason) {
+        return originalPrompt + """
+
+                上一次返回结果没有通过后端校验，失败原因：%s
+                请重新生成，并严格满足：
+                1. destination 必须与用户填写的目的地完全一致。
+                2. totalDays 必须等于用户填写的旅行天数。
+                3. days 数组长度必须等于用户填写的旅行天数。
+                4. 每天的 day 序号必须从 1 开始连续递增。
+                5. 每天的 theme、morning、afternoon、evening、transportTip 都不能为空。
+                6. 只返回合法 JSON，不要输出任何解释文字。
+                """.formatted(failureReason);
     }
 
     private String formatReferences(List<KnowledgeSearchResult> references) {
@@ -262,5 +371,11 @@ public class TravelPlanningService {
             return content;
         }
         return content.substring(0, 80) + "...";
+    }
+
+    private record GenerationResult(
+            TripPlanResponse response,
+            int attempts
+    ) {
     }
 }
