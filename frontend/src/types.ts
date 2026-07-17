@@ -82,3 +82,13 @@ export interface KnowledgeSearchResult {
   content: string
   score: number
 }
+
+export interface KnowledgeDebugResponse {
+  request: PlanTripRequest
+  destinationKey: string
+  dedicatedKnowledgeBase: boolean
+  vectorStoreEnabled: boolean
+  retrievalMode: string
+  query: string
+  results: KnowledgeSearchResult[]
+}

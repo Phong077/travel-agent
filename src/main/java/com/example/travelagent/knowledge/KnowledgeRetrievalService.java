@@ -47,13 +47,29 @@ public class KnowledgeRetrievalService {
     }
 
     public List<KnowledgeSearchResult> retrieve(PlanTripRequest request) {
+        return search(request).results();
+    }
+
+    public KnowledgeDebugResponse debug(PlanTripRequest request) {
+        return search(request);
+    }
+
+    private KnowledgeDebugResponse search(PlanTripRequest request) {
         String destinationKey = destinationResolver.resolve(request.destination());
         List<WeightedKeyword> keywords = buildKeywords(request);
         String query = buildVectorQuery(request, keywords);
         List<KnowledgeSearchResult> pgVectorResults = retrieveFromPgVector(request, destinationKey, query);
         if (!pgVectorResults.isEmpty()) {
             logMatchedResults("pgvector", pgVectorResults);
-            return pgVectorResults;
+            return new KnowledgeDebugResponse(
+                    request,
+                    destinationKey,
+                    destinationResolver.hasDedicatedKnowledgeBase(destinationKey),
+                    pgVectorKnowledgeStore.isPresent(),
+                    "pgvector",
+                    query,
+                    pgVectorResults
+            );
         }
 
         Map<KnowledgeDocument, Double> vectorScores = vectorIndex.search(query);
@@ -70,7 +86,15 @@ public class KnowledgeRetrievalService {
 
         logMatchedResults("local-hybrid", results);
 
-        return results;
+        return new KnowledgeDebugResponse(
+                request,
+                destinationKey,
+                destinationResolver.hasDedicatedKnowledgeBase(destinationKey),
+                pgVectorKnowledgeStore.isPresent(),
+                "local-hybrid",
+                query,
+                results
+        );
     }
 
     private List<KnowledgeSearchResult> retrieveFromPgVector(

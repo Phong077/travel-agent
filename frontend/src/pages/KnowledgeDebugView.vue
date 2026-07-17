@@ -26,7 +26,7 @@
               <span>目的地</span>
               <div class="field-control">
                 <span class="material-symbols-outlined">location_on</span>
-                <input v-model="form.destination" placeholder="四川 / 云南 / 新疆" />
+                <input v-model="form.destination" placeholder="四川 / 云南 / 深圳 / 新疆" />
               </div>
             </label>
             <label class="field">
@@ -99,6 +99,7 @@
           <div class="page-actions">
             <button class="ghost-action" type="button" @click="fillDestination('四川')">四川样例</button>
             <button class="ghost-action" type="button" @click="fillDestination('云南')">云南样例</button>
+            <button class="ghost-action" type="button" @click="fillGuangdongExample">深圳样例</button>
             <button class="ghost-action" type="button" @click="fillDestination('新疆')">通用兜底样例</button>
             <button class="primary-action" type="submit" :disabled="loading">
               <span class="material-symbols-outlined">search</span>
@@ -122,7 +123,7 @@
             <span class="material-symbols-outlined">progress_activity</span>
             <div>
               <h3>正在检索知识库</h3>
-              <p class="section-copy">前端正在请求 /api/knowledge/search，等待后端返回匹配文档。</p>
+              <p class="section-copy">前端正在请求 /api/knowledge/debug，等待后端返回检索链路和匹配文档。</p>
             </div>
           </div>
 
@@ -168,6 +169,35 @@
       </div>
 
       <aside class="panel">
+        <p class="section-eyebrow">调试元数据</p>
+        <h2 class="section-title" style="font-size: 20px">本次 RAG 检索路径</h2>
+
+        <div class="budget-bars" style="margin-top: 20px">
+          <div class="bar-row">
+            <span>目的地 Key</span>
+            <strong>{{ debugDestinationKey }}</strong>
+          </div>
+          <div class="bar-row">
+            <span>检索模式</span>
+            <strong>{{ debugRetrievalMode }}</strong>
+          </div>
+          <div class="bar-row">
+            <span>专属知识库</span>
+            <strong>{{ debugDedicatedLabel }}</strong>
+          </div>
+          <div class="bar-row">
+            <span>向量库</span>
+            <strong>{{ debugVectorStoreLabel }}</strong>
+          </div>
+        </div>
+
+        <div class="debug-json-panel">
+          <div class="debug-json-header">
+            <p class="section-eyebrow">后端检索 Query</p>
+          </div>
+          <pre>{{ debugQuery }}</pre>
+        </div>
+
         <KnowledgeBaseSummary :references="knowledgeReferences" />
 
         <p class="section-eyebrow">查询分析</p>
@@ -209,9 +239,9 @@
 import { computed, reactive, ref } from 'vue'
 import AppShell from '../components/AppShell.vue'
 import KnowledgeBaseSummary from '../components/KnowledgeBaseSummary.vue'
-import { searchKnowledge } from '../api/travel'
+import { debugKnowledge } from '../api/travel'
 import { apiStatus } from '../store/apiStatus'
-import type { KnowledgeReference, KnowledgeSearchResult } from '../types'
+import type { KnowledgeDebugResponse, KnowledgeReference, KnowledgeSearchResult } from '../types'
 import { copyTextToClipboard } from '../utils/clipboard'
 import { clonePlanRequest, createDefaultPlanRequest } from '../utils/planRequest'
 
@@ -224,6 +254,7 @@ const avoidInput = ref('')
 const copyMessage = ref('')
 const responseCopyMessage = ref('')
 const results = ref<KnowledgeSearchResult[]>([])
+const debugResponse = ref<KnowledgeDebugResponse | null>(null)
 
 const knowledgeReferences = computed<KnowledgeReference[]>(() =>
   results.value.map((item) => ({
@@ -256,7 +287,22 @@ const queryPreview = computed(() => {
 })
 
 const requestJson = computed(() => JSON.stringify(clonePlanRequest(form), null, 2))
-const responseJson = computed(() => JSON.stringify(results.value, null, 2))
+const responseJson = computed(() => JSON.stringify(debugResponse.value ?? results.value, null, 2))
+const debugDestinationKey = computed(() => debugResponse.value?.destinationKey ?? '等待检索')
+const debugRetrievalMode = computed(() => debugResponse.value?.retrievalMode ?? '等待检索')
+const debugDedicatedLabel = computed(() => {
+  if (!debugResponse.value) {
+    return '等待检索'
+  }
+  return debugResponse.value.dedicatedKnowledgeBase ? '是' : '否'
+})
+const debugVectorStoreLabel = computed(() => {
+  if (!debugResponse.value) {
+    return '等待检索'
+  }
+  return debugResponse.value.vectorStoreEnabled ? '已启用' : '未启用'
+})
+const debugQuery = computed(() => debugResponse.value?.query || '运行检索后展示后端实际用于召回的 query。')
 
 function addUniqueValue(list: string[], value: string) {
   const normalizedValue = value.trim()
@@ -285,6 +331,16 @@ function removeAvoid(value: string) {
 
 function fillDestination(destination: string) {
   form.destination = destination
+}
+
+function fillGuangdongExample() {
+  form.departureCity = '广州'
+  form.destination = '深圳'
+  form.days = 2
+  form.travelers = 5
+  form.budget = 3000
+  form.preferences = ['滨海', '文艺', '美食']
+  form.avoid = ['频繁换酒店']
 }
 
 async function copyRequestJson() {
@@ -321,8 +377,10 @@ async function runSearch() {
 
   loading.value = true
   hasSearched.value = true
+  debugResponse.value = null
   try {
-    results.value = await searchKnowledge(clonePlanRequest(form))
+    debugResponse.value = await debugKnowledge(clonePlanRequest(form))
+    results.value = debugResponse.value.results
   } catch (error) {
     validationError.value = error instanceof Error ? error.message : '知识库检索失败，请稍后重试'
   } finally {

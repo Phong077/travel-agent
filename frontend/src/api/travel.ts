@@ -1,4 +1,4 @@
-import type { ApiResponse, HealthStatus, KnowledgeSearchResult, PlanTripRequest, TripPlanResponse } from '../types'
+import type { ApiResponse, HealthStatus, KnowledgeDebugResponse, KnowledgeSearchResult, PlanTripRequest, TripPlanResponse } from '../types'
 import { createMockKnowledgeResults, createMockTripPlan } from '../mock'
 import { markApiFallback, markApiReady } from '../store/apiStatus'
 
@@ -176,5 +176,26 @@ export async function searchKnowledge(request: PlanTripRequest): Promise<Knowled
     console.warn('知识库接口暂不可用，使用前端 mock 数据兜底。', error)
     markApiFallback(`知识库接口暂不可用，当前展示的是前端 mock 检索结果。原因：${getFallbackReason(error)}。`)
     return createMockKnowledgeResults(request)
+  }
+}
+
+export async function debugKnowledge(request: PlanTripRequest): Promise<KnowledgeDebugResponse> {
+  try {
+    const result = await postJson<KnowledgeDebugResponse>(buildApiUrl('/api/knowledge/debug'), request, SEARCH_TIMEOUT_MS)
+    markApiReady()
+    return result
+  } catch (error) {
+    console.warn('知识库调试接口暂不可用，使用前端 mock 检索结果兜底。', error)
+    markApiFallback(`知识库调试接口暂不可用，当前展示的是前端 mock 检索结果。原因：${getFallbackReason(error)}。`)
+    const results = createMockKnowledgeResults(request)
+    return {
+      request,
+      destinationKey: 'mock',
+      dedicatedKnowledgeBase: false,
+      vectorStoreEnabled: false,
+      retrievalMode: 'frontend-mock',
+      query: `${request.destination} ${request.departureCity} ${request.preferences.join(' ')}`,
+      results,
+    }
   }
 }

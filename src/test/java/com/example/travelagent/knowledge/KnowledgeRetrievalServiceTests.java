@@ -75,6 +75,30 @@ class KnowledgeRetrievalServiceTests {
     }
 
     @Test
+    void shouldReturnDebugMetadataForShenzhenDestination() {
+        PlanTripRequest request = new PlanTripRequest(
+                "广州",
+                "深圳",
+                2,
+                5,
+                2000,
+                List.of("滨海", "文艺", "美食"),
+                List.of("频繁换酒店")
+        );
+
+        KnowledgeDebugResponse response = retrievalService.debug(request);
+
+        assertThat(response.destinationKey()).isEqualTo("guangdong");
+        assertThat(response.dedicatedKnowledgeBase()).isTrue();
+        assertThat(response.vectorStoreEnabled()).isFalse();
+        assertThat(response.retrievalMode()).isEqualTo("local-hybrid");
+        assertThat(response.query()).contains("深圳", "广州", "滨海");
+        assertThat(response.results())
+                .extracting(KnowledgeSearchResult::source)
+                .anyMatch(source -> source.startsWith("guangdong/"));
+    }
+
+    @Test
     void shouldFallbackToCommonKnowledgeForUnknownDestination() {
         PlanTripRequest request = new PlanTripRequest(
                 "重庆",
