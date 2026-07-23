@@ -29,6 +29,8 @@
           <option value="all">全部模式</option>
           <option value="stable">稳定服务编排</option>
           <option value="agent">Agent Tool Calling</option>
+          <option value="react-agent">ReactAgent</option>
+          <option value="multi-agent">多 Agent 协同</option>
         </select>
       </div>
 
@@ -102,6 +104,7 @@ import AppShell from '../components/AppShell.vue'
 import EmptyTripState from '../components/EmptyTripState.vue'
 import { clearTripHistory, deleteTripHistoryItem, loadTripHistoryItem, tripState, type GenerationMode } from '../store/tripStore'
 import { downloadTextFile } from '../utils/download'
+import { getGenerationModeLabel } from '../utils/generationMode'
 import { createTripPlanMarkdownFilename, formatTripPlanMarkdown } from '../utils/tripFormatter'
 
 const router = useRouter()
@@ -129,7 +132,7 @@ const filteredHistoryItems = computed(() => {
 })
 
 function getModeLabel(mode: GenerationMode) {
-  return mode === 'agent' ? 'Agent Tool Calling' : '稳定服务编排'
+  return getGenerationModeLabel(mode)
 }
 
 function formatDate(value: string) {

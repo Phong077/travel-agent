@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: travel-agent
+  ai:
+    dashscope:
+      # Do not paste your key here. Set it in your IDE environment variables:
+      # DASHSCOPE_API_KEY=your-api-key
+      api-key: ${DASHSCOPE_API_KEY:}
+      chat:
+        options:
+          model: ${DASHSCOPE_MODEL:qwen-plus}
+
+amap:
+  api-key: ${AMAP_API_KEY:}
+  weather:
+    enabled: ${AMAP_WEATHER_ENABLED:true}
+
+dashscope:
+  embedding:
+    base-url: ${DASHSCOPE_EMBEDDING_BASE_URL:https://dashscope.aliyuncs.com/compatible-mode/v1}
+    model: ${DASHSCOPE_EMBEDDING_MODEL:text-embedding-v4}
+    dimensions: ${DASHSCOPE_EMBEDDING_DIMENSIONS:1024}
+
+rag:
+  vector-store:
+    enabled: ${RAG_VECTOR_STORE_ENABLED:false}
+    jdbc-url: ${RAG_VECTOR_STORE_JDBC_URL:jdbc:postgresql://localhost:5432/travel_agent}
+    username: ${RAG_VECTOR_STORE_USERNAME:travel_agent}
+    password: ${RAG_VECTOR_STORE_PASSWORD:travel_agent}
+
+server:
+  port: 8092
+
+app:
+  cors:
+    allowed-origins: http://localhost:5173,http://127.0.0.1:5173
+
+logging:
+  level:
+    com.example.travelagent.application.TravelPlanningService: DEBUG
+    com.example.travelagent.application.ReactAgentTravelPlanningService: DEBUG
+    com.example.travelagent.agent.TravelAgentTools: INFO

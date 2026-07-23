@@ -5,7 +5,7 @@ import { clonePlanRequest, createDefaultPlanRequest } from '../utils/planRequest
 import { readSessionJson } from '../utils/storage'
 import { normalizeTripPlanResponse } from '../utils/tripResult'
 
-export type GenerationMode = 'stable' | 'agent'
+export type GenerationMode = 'stable' | 'agent' | 'react-agent' | 'multi-agent'
 
 export interface TripHistoryItem {
   id: string
@@ -42,7 +42,11 @@ const savedRequest = readSessionJson<Partial<PlanTripRequest>>('travel-agent-req
 const savedGenerationMode = window.sessionStorage.getItem('travel-agent-generation-mode')
 
 function normalizeGenerationMode(value: unknown): GenerationMode {
-  return value === 'agent' ? 'agent' : 'stable'
+  if (value === 'agent' || value === 'react-agent' || value === 'multi-agent') {
+    return value
+  }
+
+  return 'stable'
 }
 
 function readHistory(): TripHistoryItem[] {

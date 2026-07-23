@@ -35,9 +35,10 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { tripState } from '../store/tripStore'
+import { getGenerationModeLabel } from '../utils/generationMode'
 
 const destinationName = computed(() => tripState.request.destination || '目的地')
-const generationModeLabel = computed(() => (tripState.generationMode === 'agent' ? 'Agent Tool Calling' : '稳定服务编排'))
+const generationModeLabel = computed(() => getGenerationModeLabel(tripState.generationMode))
 
 const steps = computed(() => [
   {

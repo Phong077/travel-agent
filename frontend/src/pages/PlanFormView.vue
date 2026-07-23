@@ -168,8 +168,9 @@
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import AppShell from '../components/AppShell.vue'
-import { planTrip, planTripWithAgent } from '../api/travel'
+import { planTrip, planTripWithAgent, planTripWithMultiAgent, planTripWithReactAgent } from '../api/travel'
 import { setGenerationMode, setTripRequest, setTripResult, tripState, type GenerationMode } from '../store/tripStore'
+import type { PlanTripRequest } from '../types'
 import { clonePlanRequest, createDefaultPlanRequest } from '../utils/planRequest'
 
 const router = useRouter()
@@ -204,6 +205,18 @@ const generationModes: Array<{
     name: 'Agent 版',
     title: 'Tool Calling',
     description: '大模型通过工具调用预算、天气和知识库能力。',
+  },
+  {
+    value: 'react-agent',
+    name: 'ReactAgent 版',
+    title: 'ReAct 循环',
+    description: '智能体自动选择并调用工具，适合演示 Agent 决策链路。',
+  },
+  {
+    value: 'multi-agent',
+    name: '多 Agent 版',
+    title: '协同编排',
+    description: '多个角色分别负责检索、预算、天气和行程生成，更适合展示协作架构。',
   },
 ]
 
@@ -274,9 +287,7 @@ async function submitPlan() {
   await router.push('/loading')
 
   try {
-    const result = selectedGenerationMode.value === 'agent'
-      ? await planTripWithAgent(submittedRequest)
-      : await planTrip(submittedRequest)
+    const result = await generateTripPlan(submittedRequest, selectedGenerationMode.value)
     setTripResult(result)
     await router.push('/result')
   } catch (error) {
@@ -285,5 +296,21 @@ async function submitPlan() {
   } finally {
     tripState.loading = false
   }
+}
+
+function generateTripPlan(submittedRequest: PlanTripRequest, mode: GenerationMode) {
+  if (mode === 'multi-agent') {
+    return planTripWithMultiAgent(submittedRequest)
+  }
+
+  if (mode === 'react-agent') {
+    return planTripWithReactAgent(submittedRequest)
+  }
+
+  if (mode === 'agent') {
+    return planTripWithAgent(submittedRequest)
+  }
+
+  return planTrip(submittedRequest)
 }
 </script>

@@ -32,6 +32,7 @@
 import { computed } from 'vue'
 import type { GenerationMode } from '../store/tripStore'
 import type { PlanTripRequest, TripPlanResponse } from '../types'
+import { getGenerationModeLabel } from '../utils/generationMode'
 
 const props = defineProps<{
   mode: GenerationMode
@@ -39,8 +40,18 @@ const props = defineProps<{
   result: TripPlanResponse
 }>()
 
-const title = computed(() => (props.mode === 'agent' ? 'Agent 调用链路' : '服务编排链路'))
-const modeLabel = computed(() => (props.mode === 'agent' ? 'Tool Calling' : 'Stable Flow'))
+const title = computed(() => {
+  if (props.mode === 'multi-agent') {
+    return '多 Agent 协同链路'
+  }
+
+  if (props.mode === 'react-agent') {
+    return 'ReactAgent 调用链路'
+  }
+
+  return props.mode === 'agent' ? 'Agent 调用链路' : '服务编排链路'
+})
+const modeLabel = computed(() => getGenerationModeLabel(props.mode))
 
 const evidenceItems = computed(() => {
   const toolCalls = props.result.toolCalls ?? []

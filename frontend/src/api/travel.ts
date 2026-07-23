@@ -167,6 +167,40 @@ export async function planTripWithAgent(request: PlanTripRequest): Promise<TripP
   }
 }
 
+export async function planTripWithReactAgent(request: PlanTripRequest): Promise<TripPlanResponse> {
+  try {
+    const result = await postJson<TripPlanResponse>(buildApiUrl('/api/react-agent/trips/plan'), request, PLAN_TIMEOUT_MS)
+    validateTripPlanMatchesRequest(result, request)
+    markApiReady()
+    return result
+  } catch (error) {
+    if (!shouldUseFrontendMock(error)) {
+      throw error
+    }
+    console.warn('ReactAgent 接口暂不可用，使用前端 mock 数据兜底。', error)
+    markApiFallback(`ReactAgent 接口暂不可用，当前展示的是前端 mock 演示数据。原因：${getFallbackReason(error)}。`)
+    await new Promise((resolve) => window.setTimeout(resolve, 900))
+    return createMockTripPlan(request)
+  }
+}
+
+export async function planTripWithMultiAgent(request: PlanTripRequest): Promise<TripPlanResponse> {
+  try {
+    const result = await postJson<TripPlanResponse>(buildApiUrl('/api/multi-agent/trips/plan'), request, PLAN_TIMEOUT_MS)
+    validateTripPlanMatchesRequest(result, request)
+    markApiReady()
+    return result
+  } catch (error) {
+    if (!shouldUseFrontendMock(error)) {
+      throw error
+    }
+    console.warn('多 Agent 接口暂不可用，使用前端 mock 数据兜底。', error)
+    markApiFallback(`多 Agent 接口暂不可用，当前展示的是前端 mock 演示数据。原因：${getFallbackReason(error)}。`)
+    await new Promise((resolve) => window.setTimeout(resolve, 900))
+    return createMockTripPlan(request)
+  }
+}
+
 export async function searchKnowledge(request: PlanTripRequest): Promise<KnowledgeSearchResult[]> {
   try {
     const result = await postJson<KnowledgeSearchResult[]>(buildApiUrl('/api/knowledge/search'), request, SEARCH_TIMEOUT_MS)

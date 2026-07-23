@@ -126,6 +126,7 @@ import ToolEvidencePanel from '../components/ToolEvidencePanel.vue'
 import { resetTripSession, tripState } from '../store/tripStore'
 import { copyTextToClipboard } from '../utils/clipboard'
 import { downloadTextFile } from '../utils/download'
+import { getGenerationModeDescription, getGenerationModeLabel } from '../utils/generationMode'
 import { createTripPlanMarkdownFilename, formatTripPlanMarkdown, formatTripPlanSummary } from '../utils/tripFormatter'
 
 const router = useRouter()
@@ -133,12 +134,8 @@ const hasResult = computed(() => tripState.hasResult)
 const result = computed(() => tripState.result)
 const request = computed(() => tripState.request)
 const generationMetadata = computed(() => result.value.generationMetadata)
-const generationModeLabel = computed(() => (tripState.generationMode === 'agent' ? 'Agent Tool Calling' : '稳定服务编排'))
-const generationModeDescription = computed(() =>
-  tripState.generationMode === 'agent'
-    ? '大模型通过工具调用预算、天气和知识库能力后生成行程。'
-    : '后端按固定顺序编排知识库、预算、天气和大模型生成流程。'
-)
+const generationModeLabel = computed(() => getGenerationModeLabel(tripState.generationMode))
+const generationModeDescription = computed(() => getGenerationModeDescription(tripState.generationMode))
 const copyMessage = ref('')
 const perPersonBudgetWidth = computed(() => getProgressWidth(result.value.budgetAnalysis?.perPersonBudget ?? 0, 6000))
 const dailyBudgetWidth = computed(() => getProgressWidth(result.value.budgetAnalysis?.perPersonDailyBudget ?? 0, 1500))

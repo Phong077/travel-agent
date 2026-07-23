@@ -123,12 +123,13 @@
 import { computed } from 'vue'
 import AppShell from '../components/AppShell.vue'
 import { tripState } from '../store/tripStore'
+import { getGenerationModeLabel } from '../utils/generationMode'
 
 const hasResult = computed(() => tripState.hasResult)
 const result = computed(() => tripState.result)
 const request = computed(() => tripState.request)
 const historyCount = computed(() => tripState.history.length)
-const agentHistoryCount = computed(() => tripState.history.filter((item) => item.generationMode === 'agent').length)
+const agentHistoryCount = computed(() => tripState.history.filter((item) => item.generationMode !== 'stable').length)
 const stableHistoryCount = computed(() => tripState.history.filter((item) => item.generationMode === 'stable').length)
 const latestHistoryItem = computed(() => tripState.history[0])
 const referenceCount = computed(() => (hasResult.value ? result.value.references.length : 0))
@@ -147,7 +148,7 @@ const previewMeta = computed(() => `${request.value.days} 天 · ${request.value
 const historyInsightTitle = computed(() => (historyCount.value > 0 ? '已沉淀旅行方案' : '暂无历史记录'))
 const historyInsightCopy = computed(() =>
   latestHistoryItem.value
-    ? `最近一次生成：${latestHistoryItem.value.result.destination} · ${latestHistoryItem.value.result.totalDays} 天，使用${latestHistoryItem.value.generationMode === 'agent' ? 'Agent Tool Calling' : '稳定服务编排'}。`
+    ? `最近一次生成：${latestHistoryItem.value.result.destination} · ${latestHistoryItem.value.result.totalDays} 天，使用${getGenerationModeLabel(latestHistoryItem.value.generationMode)}。`
     : '生成行程后，系统会自动保存本地历史，方便恢复、筛选和导出。',
 )
 const showcaseRows = computed(() => {
